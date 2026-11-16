@@ -1,0 +1,2354 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     218家族—植物大戰殭屍 (最終出版完整版)
+     製作人：李承祐製作
+     ============================================================ -->
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>218家族—植物大戰殭屍 | 李承祐製作</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: radial-gradient(circle at top, #1e3a2f 0%, #0f1f19 100%);
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        /* 遊戲按鈕質感 */
+        .game-btn {
+            background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+            border: 3px solid #78350f;
+            box-shadow: 0 4px 0 #78350f, 0 8px 15px rgba(0,0,0,0.4);
+            transition: all 0.1s ease;
+        }
+        .game-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #78350f, 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        /* 卡片選取特效 */
+        .seed-card {
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
+        }
+        .seed-card.selected {
+            transform: translateY(-5px) scale(1.04);
+            box-shadow: 0 0 0 3px #fde047, 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .seed-card.disabled {
+            filter: grayscale(85%) brightness(0.65);
+            cursor: not-allowed;
+        }
+
+        /* 陽光收集動畫 */
+        @keyframes floatPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.12) rotate(8deg); }
+        }
+        .sun-token {
+            animation: floatPulse 2s infinite ease-in-out;
+            cursor: pointer;
+        }
+
+        /* 傷害數字飄浮動畫 */
+        @keyframes damageFloat {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-28px) scale(1.2); }
+        }
+        .damage-text {
+            animation: damageFloat 0.65s ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* 食人花咀嚼消化搖晃動畫 */
+        @keyframes chomperChew {
+            0%, 100% { transform: scale(1.04, 0.96) rotate(-2deg); }
+            50% { transform: scale(0.95, 1.05) rotate(2deg); }
+        }
+        .chomper-chewing {
+            animation: chomperChew 0.55s infinite ease-in-out;
+            filter: saturate(1.3) hue-rotate(-14deg) drop-shadow(0 0 10px rgba(192, 38, 211, 0.85));
+        }
+
+        /* 撐竿跳殭屍飛躍植物弧線動畫 */
+        @keyframes poleVaultArc {
+            0% { transform: translateY(0) scale(1) rotate(0deg); }
+            45% { transform: translateY(-48%) scale(1.18) rotate(-18deg); }
+            100% { transform: translateY(0) scale(1) rotate(0deg); }
+        }
+        .pole-vaulting {
+            animation: poleVaultArc 0.55s cubic-bezier(0.25, 0.85, 0.45, 1) forwards;
+            z-index: 40;
+        }
+
+        /* 櫻桃炸彈引信膨脹動畫 */
+        @keyframes cherryFuse {
+            0% { transform: scale(0.95); filter: brightness(1); }
+            50% { transform: scale(1.22); filter: brightness(1.35); }
+            100% { transform: scale(1.38); filter: brightness(1.7); }
+        }
+        .cherry-arming {
+            animation: cherryFuse 0.65s ease-in forwards;
+        }
+
+        /* 香菇分裂炸彈旋轉拖尾動畫 */
+        @keyframes sporeSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(-180deg) scale(1.14); }
+            100% { transform: rotate(-360deg) scale(1); }
+        }
+        .cluster-bomb-orb {
+            animation: sporeSpin 0.45s linear infinite;
+        }
+
+        /* 堅果受損兩階段裂痕視覺回饋 */
+        .wallnut-damaged-1 {
+            filter: sepia(0.28) contrast(1.08) brightness(0.95);
+            box-shadow: inset 0 0 0 2px rgba(217, 119, 6, 0.85);
+            background-image: repeating-linear-gradient(135deg, transparent 0 10px, rgba(120, 53, 15, 0.22) 10px 12px);
+        }
+        .wallnut-damaged-2 {
+            filter: sepia(0.55) contrast(1.18) brightness(0.84) hue-rotate(-12deg);
+            box-shadow: inset 0 0 0 3px rgba(225, 29, 72, 0.9);
+            background-image: repeating-linear-gradient(45deg, transparent 0 7px, rgba(153, 27, 27, 0.32) 7px 9px),
+                              repeating-linear-gradient(-45deg, transparent 0 9px, rgba(120, 53, 15, 0.3) 9px 11px);
+            transform: scale(0.95) rotate(-3deg);
+        }
+
+        /* 網格草皮交錯質感 */
+        .lawn-cell-even {
+            background-color: rgba(74, 222, 128, 0.22);
+        }
+        .lawn-cell-odd {
+            background-color: rgba(34, 197, 94, 0.30);
+        }
+        .lawn-cell:hover {
+            background-color: rgba(253, 224, 71, 0.35);
+        }
+
+        /* 橫屏專屬排版最佳化 */
+        @media (orientation: portrait) {
+            #portrait-warning {
+                display: flex !important;
+            }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col justify-between p-1 sm:p-2 text-white">
+
+    <!-- 直屏旋轉提示遮罩 -->
+    <div id="portrait-warning" class="fixed inset-0 bg-slate-950/95 z-[60] hidden flex-col items-center justify-center p-6 text-center">
+        <div class="text-6xl mb-4 animate-bounce">📱🔄</div>
+        <h2 class="text-2xl font-black text-amber-300 mb-2">建議切換為「橫屏」遊玩</h2>
+        <p class="text-sm text-slate-300 mb-6 max-w-xs">
+            《218家族—植物大戰殭屍》採用 9×5 寬幅草皮戰場，將手機橫放可獲得最佳視野與操作體驗！
+        </p>
+        <button onclick="document.getElementById('portrait-warning').style.setProperty('display', 'none', 'important')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl border-2 border-emerald-300 cursor-pointer">
+            先以目前畫面繼續
+        </button>
+    </div>
+
+    <!-- 緊湊型橫屏頂部工具列 -->
+    <header class="w-full max-w-6xl mx-auto bg-amber-950/90 border-2 sm:border-4 border-amber-700 rounded-xl sm:rounded-2xl px-1.5 py-1 sm:px-3 sm:py-1.5 shadow-xl flex items-center justify-between gap-1.5 z-20 shrink-0">
+        <!-- 左側：陽光計數與波數 -->
+        <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+            <!-- 陽光槽 -->
+            <div class="flex items-center bg-amber-900 border-2 border-amber-500 rounded-lg sm:rounded-xl px-1.5 sm:px-2 py-1 shadow-inner">
+                <span class="text-base sm:text-xl mr-1 drop-shadow">☀️</span>
+                <div>
+                    <div class="text-[9px] text-amber-300 font-bold leading-none hidden lg:block">陽光能量</div>
+                    <div id="sun-count" class="text-sm sm:text-lg font-black text-yellow-300 leading-none">200</div>
+                </div>
+            </div>
+
+            <!-- 關卡進度與分數 -->
+            <div class="bg-emerald-950/90 border border-emerald-600 rounded-lg sm:rounded-xl px-1.5 sm:px-2 py-1">
+                <div class="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-emerald-300 leading-none">
+                    <span id="stage-hud-label" class="bg-amber-700/90 text-amber-100 px-1 py-0.5 rounded text-[9px] sm:text-[10px] font-black">第1關•簡單</span>
+                    <span>第<span id="wave-display" class="text-white text-xs sm:text-sm mx-0.5">1</span>/<span id="total-waves-display" class="text-emerald-200">2</span>波</span>
+                    <span class="hidden xl:inline">• 擊退:<span id="score-display" class="text-yellow-300 ml-0.5">0</span></span>
+                </div>
+                <div class="w-20 sm:w-28 h-1.5 bg-gray-800 rounded-full mt-1 overflow-hidden border border-emerald-700">
+                    <div id="wave-progress" class="h-full bg-gradient-to-r from-lime-400 to-emerald-500 transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 中間：5 張植物種子卡片槽 + 鏟子 -->
+        <div class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto py-0.5">
+            <!-- 卡片 1：向日葵 -->
+            <button id="card-sunflower" onclick="selectSeed('sunflower')" class="seed-card relative bg-gradient-to-b from-amber-100 to-amber-300 border-2 border-amber-800 rounded-lg sm:rounded-xl px-1.5 py-1 flex items-center gap-1 text-amber-950 shadow cursor-pointer shrink-0">
+                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-md overflow-hidden bg-white/90 border border-amber-600 flex items-center justify-center shrink-0">
+                    <img id="preview-sunflower" alt="向日葵" class="w-full h-full object-contain">
+                </div>
+                <div class="text-left">
+                    <div class="text-[10px] sm:text-xs font-black leading-tight">向日葵</div>
+                    <span class="inline-block bg-amber-900 text-yellow-300 text-[9px] sm:text-[10px] font-extrabold px-1 rounded-full">☀️ 50</span>
+                </div>
+                <div id="cd-sunflower" class="absolute inset-0 bg-black/70 rounded-lg sm:rounded-xl hidden flex items-center justify-center text-white font-black text-xs"></div>
+            </button>
+
+            <!-- 卡片 2：布丁黃油射手 -->
+            <button id="card-shooter" onclick="selectSeed('shooter')" class="seed-card relative bg-gradient-to-b from-yellow-100 to-orange-200 border-2 border-amber-800 rounded-lg sm:rounded-xl px-1.5 py-1 flex items-center gap-1 text-amber-950 shadow cursor-pointer shrink-0">
+                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-md overflow-hidden bg-white/90 border border-amber-600 flex items-center justify-center shrink-0">
+                    <img id="preview-shooter" alt="布丁黃油射手" class="w-full h-full object-contain">
+                </div>
+                <div class="text-left">
+                    <div class="text-[10px] sm:text-xs font-black leading-tight">黃油射手</div>
+                    <span class="inline-block bg-amber-900 text-yellow-300 text-[9px] sm:text-[10px] font-extrabold px-1 rounded-full">☀️ 100</span>
+                </div>
+                <div id="cd-shooter" class="absolute inset-0 bg-black/70 rounded-lg sm:rounded-xl hidden flex items-center justify-center text-white font-black text-xs"></div>
+            </button>
+
+            <!-- 卡片 3：堅果 -->
+            <button id="card-wallnut" onclick="selectSeed('wallnut')" class="seed-card relative bg-gradient-to-b from-orange-100 to-amber-300 border-2 border-amber-900 rounded-lg sm:rounded-xl px-1.5 py-1 flex items-center gap-1 text-amber-950 shadow cursor-pointer shrink-0">
+                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-md overflow-hidden bg-white/90 border border-amber-700 flex items-center justify-center shrink-0">
+                    <img id="preview-wallnut" alt="堅果" class="w-full h-full object-contain">
+                </div>
+                <div class="text-left">
+                    <div class="text-[10px] sm:text-xs font-black leading-tight">堅果</div>
+                    <span class="inline-block bg-amber-950 text-yellow-300 text-[9px] sm:text-[10px] font-extrabold px-1 rounded-full">☀️ 50</span>
+                </div>
+                <div id="cd-wallnut" class="absolute inset-0 bg-black/70 rounded-lg sm:rounded-xl hidden flex items-center justify-center text-white font-black text-xs"></div>
+            </button>
+
+            <!-- 卡片 4：食人花 -->
+            <button id="card-chomper" onclick="selectSeed('chomper')" class="seed-card relative bg-gradient-to-b from-purple-100 to-fuchsia-200 border-2 border-purple-800 rounded-lg sm:rounded-xl px-1.5 py-1 flex items-center gap-1 text-purple-950 shadow cursor-pointer shrink-0">
+                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-md overflow-hidden bg-white/90 border border-purple-600 flex items-center justify-center shrink-0">
+                    <img id="preview-chomper" alt="食人花" class="w-full h-full object-contain">
+                </div>
+                <div class="text-left">
+                    <div class="text-[10px] sm:text-xs font-black leading-tight">食人花</div>
+                    <span class="inline-block bg-purple-950 text-yellow-300 text-[9px] sm:text-[10px] font-extrabold px-1 rounded-full">☀️ 150</span>
+                </div>
+                <div id="cd-chomper" class="absolute inset-0 bg-black/70 rounded-lg sm:rounded-xl hidden flex items-center justify-center text-white font-black text-xs"></div>
+            </button>
+
+            <!-- 卡片 5：櫻桃炸彈 -->
+            <button id="card-cherry" onclick="selectSeed('cherry')" class="seed-card relative bg-gradient-to-b from-rose-100 to-red-200 border-2 border-rose-800 rounded-lg sm:rounded-xl px-1.5 py-1 flex items-center gap-1 text-rose-950 shadow cursor-pointer shrink-0">
+                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-md overflow-hidden bg-white/90 border border-rose-600 flex items-center justify-center shrink-0">
+                    <img id="preview-cherry" alt="櫻桃炸彈" class="w-full h-full object-contain">
+                </div>
+                <div class="text-left">
+                    <div class="text-[10px] sm:text-xs font-black leading-tight">櫻桃炸彈</div>
+                    <span class="inline-block bg-rose-950 text-yellow-300 text-[9px] sm:text-[10px] font-extrabold px-1 rounded-full">☀️ 150</span>
+                </div>
+                <div id="cd-cherry" class="absolute inset-0 bg-black/70 rounded-lg sm:rounded-xl hidden flex items-center justify-center text-white font-black text-xs"></div>
+            </button>
+
+            <!-- 工具：鏟子（移除植物） -->
+            <button id="card-shovel" onclick="selectSeed('shovel')" class="seed-card bg-gradient-to-b from-slate-200 to-slate-400 border-2 border-slate-700 rounded-lg sm:rounded-xl px-1.5 sm:px-2 py-1 flex items-center gap-1 text-slate-900 shadow cursor-pointer shrink-0" title="鏟除已種植的植物">
+                <span class="text-base sm:text-lg">⛏️</span>
+                <span class="text-[10px] sm:text-xs font-black hidden lg:inline">鏟子</span>
+            </button>
+        </div>
+
+        <!-- 右側：功能按鈕 -->
+        <div class="flex items-center gap-1 shrink-0">
+            <button onclick="openStageSelectModal()" class="bg-amber-700 hover:bg-amber-600 border border-amber-400 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-1.5 rounded-lg shadow transition cursor-pointer" title="選擇不同難度關卡">
+                📋 <span class="hidden md:inline">關卡</span>
+            </button>
+            <button onclick="openImageModal()" class="bg-emerald-700 hover:bg-emerald-600 border border-emerald-400 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-1.5 rounded-lg shadow transition cursor-pointer" title="管理角色圖片">
+                🖼️ <span class="hidden md:inline">圖片</span>
+            </button>
+            <button onclick="toggleFullScreen()" class="bg-sky-700 hover:bg-sky-600 border border-sky-400 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-1.5 rounded-lg shadow transition cursor-pointer" title="全螢幕橫屏模式">
+                ⛶ <span class="hidden md:inline">全螢幕</span>
+            </button>
+            <button onclick="resetGame()" class="bg-rose-700 hover:bg-rose-600 border border-rose-400 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-1.5 rounded-lg shadow transition cursor-pointer" title="重新開始本關">
+                🔄 <span class="hidden md:inline">重來</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主戰場區域（橫屏最大化自適應 9x5 草皮） -->
+    <main class="relative w-full max-w-6xl mx-auto flex-1 min-h-0 flex items-center justify-center my-1">
+        <div id="battlefield" class="relative h-full max-w-full aspect-[9/5] bg-gradient-to-b from-green-700 to-emerald-800 border-4 sm:border-6 border-amber-900 rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden">
+            
+            <!-- 左側防線警戒線 -->
+            <div class="absolute left-0 top-0 bottom-0 w-[3%] bg-gradient-to-r from-red-600/80 to-transparent z-10 pointer-events-none border-r-2 border-dashed border-red-300/60"></div>
+
+            <!-- 5x9 網格層 -->
+            <div id="grid-layer" class="absolute inset-0 grid grid-cols-9 grid-rows-5 z-10"></div>
+
+            <!-- 動態實體層（植物、殭屍、黃油子彈、香菇分裂炸彈、特效） -->
+            <div id="entities-layer" class="absolute inset-0 pointer-events-none z-20 overflow-hidden"></div>
+            
+            <!-- 可點擊陽光層 -->
+            <div id="sun-layer" class="absolute inset-0 pointer-events-none z-30 overflow-hidden"></div>
+        </div>
+    </main>
+
+    <!-- 底部緊湊提示列（含李承祐製作署名） -->
+    <footer class="w-full max-w-6xl mx-auto flex items-center justify-between text-[11px] text-amber-200 px-2 shrink-0 gap-2">
+        <div id="status-banner" class="font-bold truncate">
+            🌻 歡迎來到 218家族—植物大戰殭屍！種植「堅果」可扛下重裝碾壓與香菇扇形分裂彈！
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+            <span class="hidden xl:inline text-emerald-200/80">
+                🌻 陽光 | 🍮 黃油減速 | 🥔 高血肉盾 | 🪻 一口吞噬 | 🍒 3×3爆炸 | 🍄 分裂彈(-45)
+            </span>
+            <span class="bg-amber-900/90 border border-amber-500/70 text-yellow-300 font-black px-2 py-0.5 rounded-full text-[10px] shadow">
+                李承祐製作
+            </span>
+        </div>
+    </footer>
+
+    <!-- 遊戲開始 / 選關 / 勝利 / 結束 彈窗 -->
+    <div id="game-overlay" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-gradient-to-b from-amber-100 to-amber-200 border-4 border-amber-800 rounded-3xl max-w-4xl w-full p-3.5 sm:p-5 text-center text-amber-950 shadow-2xl max-h-[95vh] overflow-y-auto">
+            <!-- 製作署名徽章 -->
+            <div class="inline-flex items-center gap-1.5 bg-amber-900 text-yellow-300 border-2 border-amber-600 px-3 py-0.5 rounded-full text-xs font-black shadow mb-1.5">
+                ✨ 李承祐製作 ✨
+            </div>
+            <h1 id="overlay-title" class="text-lg sm:text-2xl font-black mb-1 text-amber-900">🌻 218家族—植物大戰殭屍 🍄</h1>
+            <p id="overlay-desc" class="text-xs sm:text-sm font-bold text-amber-800 mb-3">
+                歡迎加入 218家族保衛戰！選擇難度關卡並部署 5 大植物防線，善用高血量「堅果」阻擋殭屍大軍與香菇分裂炸彈！
+            </p>
+
+            <!-- 5 個遞進難度關卡選擇器 -->
+            <div class="mb-3 text-left">
+                <div class="flex items-center justify-between mb-1.5 px-1">
+                    <span class="text-xs font-black text-amber-900">🗺️ 選擇挑戰關卡（自由切換難度）</span>
+                    <span id="cleared-count-badge" class="text-[11px] font-extrabold bg-emerald-700 text-white px-2 py-0.5 rounded-full">已通關：0 / 5 關</span>
+                </div>
+                <div id="stage-cards-container" class="grid grid-cols-1 sm:grid-cols-5 gap-2"></div>
+            </div>
+
+            <!-- 9 角色圖鑑預覽（上排 5 植物 + 下排 4 殭屍） -->
+            <div class="space-y-1.5 sm:space-y-2 mb-3.5 bg-amber-950/10 p-2 sm:p-2.5 rounded-2xl border border-amber-800/20">
+                <!-- 植物陣營 (5位) -->
+                <div class="grid grid-cols-5 gap-1 sm:gap-2">
+                    <div class="flex flex-col items-center bg-white/75 rounded-xl p-1 sm:p-1.5 border border-emerald-500/40">
+                        <img id="modal-img-sunflower" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="向日葵">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">向日葵</span>
+                        <span class="text-[9px] text-emerald-700 font-bold">生產陽光</span>
+                    </div>
+                    <div class="flex flex-col items-center bg-white/75 rounded-xl p-1 sm:p-1.5 border border-amber-500/40">
+                        <img id="modal-img-shooter" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="布丁黃油射手">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">黃油射手</span>
+                        <span class="text-[9px] text-amber-700 font-bold">黃油減速連射</span>
+                    </div>
+                    <div class="flex flex-col items-center bg-white/75 rounded-xl p-1 sm:p-1.5 border-2 border-amber-600">
+                        <img id="modal-img-wallnut" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="堅果">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">堅果</span>
+                        <span class="text-[9px] text-amber-800 font-bold">650血高防肉盾</span>
+                    </div>
+                    <div class="flex flex-col items-center bg-white/75 rounded-xl p-1 sm:p-1.5 border border-purple-500/50">
+                        <img id="modal-img-chomper" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="食人花">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">食人花</span>
+                        <span class="text-[9px] text-purple-700 font-bold">近戰一口吞噬</span>
+                    </div>
+                    <div class="flex flex-col items-center bg-white/75 rounded-xl p-1 sm:p-1.5 border border-rose-500/40">
+                        <img id="modal-img-cherry" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="櫻桃炸彈">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">櫻桃炸彈</span>
+                        <span class="text-[9px] text-rose-700 font-bold">3×3 範圍爆炸</span>
+                    </div>
+                </div>
+
+                <!-- 殭屍陣營 (4位) -->
+                <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
+                    <div class="flex flex-col items-center bg-slate-900/10 rounded-xl p-1 sm:p-1.5 border border-slate-500/30">
+                        <img id="modal-img-chubby" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="一般小胖子殭屍">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">小胖子殭屍</span>
+                        <span class="text-[9px] text-purple-800 font-bold">一般啃咬進攻</span>
+                    </div>
+                    <div class="flex flex-col items-center bg-slate-900/10 rounded-xl p-1 sm:p-1.5 border border-rose-500/60">
+                        <img id="modal-img-zombie" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="香菇炸彈">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">香菇炸彈</span>
+                        <span class="text-[9px] text-rose-700 font-bold">自爆+扇形分裂彈</span>
+                    </div>
+                    <div class="flex flex-col items-center bg-slate-900/10 rounded-xl p-1 sm:p-1.5 border border-cyan-600/60">
+                        <img id="modal-img-polevaulter" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="撐竿跳殭屍">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">撐竿跳殭屍</span>
+                        <span class="text-[9px] text-cyan-800 font-bold">高速跳越首株</span>
+                    </div>
+                    <div class="flex flex-col items-center bg-slate-900/10 rounded-xl p-1 sm:p-1.5 border border-amber-600/50">
+                        <img id="modal-img-wheelchair" class="w-9 h-9 sm:w-11 sm:h-11 object-contain rounded-lg bg-white p-0.5 shadow" alt="輪椅殭屍">
+                        <span class="text-[10px] sm:text-xs font-black mt-1 leading-tight">輪椅殭屍</span>
+                        <span class="text-[9px] text-sky-800 font-bold">重裝高血坦克</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部操作按鈕區 -->
+            <div id="overlay-actions" class="flex flex-col sm:flex-row gap-2.5">
+                <button id="overlay-start-btn" onclick="startGame()" class="game-btn flex-1 py-2.5 sm:py-3 rounded-2xl text-base sm:text-xl font-black text-amber-950 cursor-pointer">
+                    🚀 開始第 1 關（簡單）！
+                </button>
+                <button id="overlay-secondary-btn" onclick="resetGame()" class="hidden bg-amber-800 hover:bg-amber-700 border-2 border-amber-950 text-amber-100 py-2.5 sm:py-3 px-5 rounded-2xl text-sm sm:text-lg font-black shadow-lg cursor-pointer">
+                    🔁 重玩本關
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 圖片設定 / 本地照片上傳備援彈窗 -->
+    <div id="image-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-emerald-500 rounded-3xl max-w-2xl w-full p-5 text-white shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <h2 class="text-lg font-black text-emerald-400">🖼️ 218家族 9 位角色圖片管理</h2>
+                    <span class="text-[11px] font-black bg-emerald-950 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-full">李承祐製作</span>
+                </div>
+                <button onclick="closeImageModal()" aria-label="關閉圖片管理視窗" class="text-slate-400 hover:text-white text-xl font-bold px-2 cursor-pointer">✕</button>
+            </div>
+            <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                已自動平行載入所有 ImgBB 網址。若因網路環境或跨網域限制導致部分照片未顯示，可直接點選下方按鈕從手機/電腦選擇對應照片即時套用：
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-5">
+                <!-- 向日葵 -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-sunflower" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="向日葵">
+                        <div class="truncate">
+                            <div class="text-xs font-bold truncate">向日葵 (植物)</div>
+                            <div id="status-sunflower" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入向日葵本機照片" class="bg-amber-600 hover:bg-amber-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'sunflower')">
+                    </label>
+                </div>
+
+                <!-- 布丁黃油射手 -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-shooter" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="布丁黃油射手">
+                        <div class="truncate">
+                            <div class="text-xs font-bold truncate">布丁黃油射手 (植物)</div>
+                            <div id="status-shooter" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入布丁黃油射手本機照片" class="bg-amber-600 hover:bg-amber-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'shooter')">
+                    </label>
+                </div>
+
+                <!-- 堅果 -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-amber-500/60">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-wallnut" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="堅果">
+                        <div class="truncate">
+                            <div class="text-xs font-bold text-amber-300 truncate">堅果 (650血高防肉盾)</div>
+                            <div id="status-wallnut" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入堅果本機照片" class="bg-amber-600 hover:bg-amber-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'wallnut')">
+                    </label>
+                </div>
+
+                <!-- 食人花 -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-purple-500/60">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-chomper" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="食人花">
+                        <div class="truncate">
+                            <div class="text-xs font-bold text-purple-300 truncate">食人花 (近戰吞噬)</div>
+                            <div id="status-chomper" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入食人花本機照片" class="bg-purple-600 hover:bg-purple-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'chomper')">
+                    </label>
+                </div>
+
+                <!-- 櫻桃炸彈 -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-cherry" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="櫻桃炸彈">
+                        <div class="truncate">
+                            <div class="text-xs font-bold truncate">櫻桃炸彈 (植物)</div>
+                            <div id="status-cherry" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入櫻桃炸彈本機照片" class="bg-amber-600 hover:bg-amber-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'cherry')">
+                    </label>
+                </div>
+
+                <!-- 一般小胖子殭屍 -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-chubby" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="一般小胖子殭屍">
+                        <div class="truncate">
+                            <div class="text-xs font-bold truncate">一般小胖子殭屍 (殭屍)</div>
+                            <div id="status-chubby" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入一般小胖子殭屍本機照片" class="bg-amber-600 hover:bg-amber-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'chubby')">
+                    </label>
+                </div>
+
+                <!-- 香菇炸彈 -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-rose-500/60">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-zombie" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="香菇炸彈">
+                        <div class="truncate">
+                            <div class="text-xs font-bold text-rose-300 truncate">香菇炸彈 (扇形分裂彈)</div>
+                            <div id="status-zombie" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入香菇炸彈本機照片" class="bg-rose-600 hover:bg-rose-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'zombie')">
+                    </label>
+                </div>
+
+                <!-- 撐竿跳殭屍 -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-cyan-500/60">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-polevaulter" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="撐竿跳殭屍">
+                        <div class="truncate">
+                            <div class="text-xs font-bold text-cyan-300 truncate">撐竿跳殭屍 (跳越植物)</div>
+                            <div id="status-polevaulter" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入撐竿跳殭屍本機照片" class="bg-cyan-600 hover:bg-cyan-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'polevaulter')">
+                    </label>
+                </div>
+
+                <!-- 輪椅殭屍（坦克） -->
+                <div class="flex items-center justify-between bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="cfg-img-wheelchair" class="w-11 h-11 rounded-lg bg-white object-contain shrink-0" alt="輪椅殭屍">
+                        <div class="truncate">
+                            <div class="text-xs font-bold truncate">輪椅殭屍（坦克）</div>
+                            <div id="status-wheelchair" class="text-[10px] text-emerald-400 truncate">載入中...</div>
+                        </div>
+                    </div>
+                    <label aria-label="匯入輪椅殭屍本機照片" class="bg-amber-600 hover:bg-amber-500 text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer shrink-0 ml-2">
+                        選擇照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleLocalUpload(event, 'wheelchair')">
+                    </label>
+                </div>
+            </div>
+
+            <button onclick="closeImageModal()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-black text-sm cursor-pointer">
+                完成並返回遊戲
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ==========================================
+         * 1. 戰場維度、傷害常數與 5 大遞進難度關卡設定
+         *    製作人：李承祐製作
+         * ==========================================
+         */
+        const ROWS = 5;
+        const COLS = 9;
+        const MUSHROOM_EXPLOSION_DAMAGE = 90;
+        const MUSHROOM_CLUSTER_DAMAGE = Math.round(MUSHROOM_EXPLOSION_DAMAGE / 2); // 45 點分裂傷害
+        const STORAGE_KEY_CLEARED = 'pvz_218_family_cleared_stages_v1';
+
+        const STAGE_CONFIGS = [
+            {
+                id: 1,
+                name: '草地初體驗',
+                difficulty: '簡單',
+                stars: '★☆☆☆☆',
+                badgeClass: 'bg-emerald-600 text-white',
+                description: '218家族熱身戰！初始陽光充裕，以小胖子殭屍與少量香菇炸彈為主。',
+                initialSun: 200,
+                naturalSunInterval: 5500,
+                spawnIntervalBase: 5200,
+                doubleSpawnChance: 0,
+                hpMultiplier: 0.85,
+                speedMultiplier: 0.9,
+                waves: [5, 7],
+                getEnemyWeights: (wave) => (
+                    wave === 1
+                        ? { chubby: 0.72, zombie: 0.28, polevaulter: 0, wheelchair: 0 }
+                        : { chubby: 0.55, zombie: 0.30, polevaulter: 0.15, wheelchair: 0 }
+                )
+            },
+            {
+                id: 2,
+                name: '陽光保衛戰',
+                difficulty: '普通',
+                stars: '★★☆☆☆',
+                badgeClass: 'bg-sky-600 text-white',
+                description: '撐竿跳選手與輪椅坦克正式登場，善用堅果與食人花穩固防線！',
+                initialSun: 150,
+                naturalSunInterval: 6200,
+                spawnIntervalBase: 4800,
+                doubleSpawnChance: 0.12,
+                hpMultiplier: 1.0,
+                speedMultiplier: 1.0,
+                waves: [6, 8, 10],
+                getEnemyWeights: (wave) => (
+                    wave === 1
+                        ? { chubby: 0.52, zombie: 0.28, polevaulter: 0.20, wheelchair: 0 }
+                        : { chubby: 0.40, zombie: 0.25, polevaulter: 0.20, wheelchair: 0.15 }
+                )
+            },
+            {
+                id: 3,
+                name: '雙線危機',
+                difficulty: '進階',
+                stars: '★★★☆☆',
+                badgeClass: 'bg-amber-600 text-white',
+                description: '30% 機率雙路同時突襲，注意防範香菇炸彈死亡後的扇形分裂彈！',
+                initialSun: 150,
+                naturalSunInterval: 6500,
+                spawnIntervalBase: 4400,
+                doubleSpawnChance: 0.30,
+                hpMultiplier: 1.2,
+                speedMultiplier: 1.08,
+                waves: [8, 11, 14],
+                getEnemyWeights: () => ({ chubby: 0.34, zombie: 0.26, polevaulter: 0.22, wheelchair: 0.18 })
+            },
+            {
+                id: 4,
+                name: '坦克突襲',
+                difficulty: '困難',
+                stars: '★★★★☆',
+                badgeClass: 'bg-orange-600 text-white',
+                description: '45% 雙線突襲搭配高比例輪椅重裝坦克，考驗黃油減速與櫻桃清場時機！',
+                initialSun: 125,
+                naturalSunInterval: 6800,
+                spawnIntervalBase: 4000,
+                doubleSpawnChance: 0.45,
+                hpMultiplier: 1.45,
+                speedMultiplier: 1.15,
+                waves: [9, 12, 15, 18],
+                getEnemyWeights: () => ({ chubby: 0.25, zombie: 0.25, polevaulter: 0.20, wheelchair: 0.30 })
+            },
+            {
+                id: 5,
+                name: '終極屍潮',
+                difficulty: '地獄',
+                stars: '★★★★★',
+                badgeClass: 'bg-rose-600 text-white',
+                description: '5 波極限屍潮與 60% 雙路並進！218家族全員總動員守衛最後家園！',
+                initialSun: 125,
+                naturalSunInterval: 7000,
+                spawnIntervalBase: 3600,
+                doubleSpawnChance: 0.60,
+                hpMultiplier: 1.75,
+                speedMultiplier: 1.25,
+                waves: [10, 14, 18, 22, 26],
+                getEnemyWeights: () => ({ chubby: 0.20, zombie: 0.25, polevaulter: 0.22, wheelchair: 0.33 })
+            }
+        ];
+
+        /**
+         * 5 位植物數值設定
+         */
+        const PLANT_STATS = {
+            sunflower: {
+                cost: 50,
+                cooldown: 5000,
+                hp: 100,
+                produceInterval: 7000,
+                initialDelay: 4000
+            },
+            shooter: {
+                cost: 100,
+                cooldown: 4500,
+                hp: 100,
+                fireInterval: 1500,
+                damage: 25
+            },
+            wallnut: {
+                cost: 50,
+                cooldown: 14000,
+                hp: 650
+            },
+            chomper: {
+                cost: 150,
+                cooldown: 9000,
+                hp: 160,
+                digestDuration: 12000, // 吞噬後 12 秒紫色飽腹消化冷卻
+                tankBiteDamage: 220    // 對輪椅坦克改造成 220 點重創咬擊（若血量 <= 220 則直接吞滅）
+            },
+            cherry: {
+                cost: 150,
+                cooldown: 15000,
+                hp: 200,
+                fuseTime: 650,
+                damage: 260
+            }
+        };
+
+        /**
+         * 9 位客製化角色圖片來源與預設設定
+         */
+        const CHARACTER_CONFIG = {
+            sunflower: {
+                name: '向日葵',
+                pageUrl: 'https://ibb.co/tTyNxzmL',
+                candidateUrls: [
+                    'https://i.ibb.co/tTyNxzmL/image.png',
+                    'https://i.ibb.co/tTyNxzmL/image.jpg',
+                    'https://i.ibb.co/tTyNxzmL/image.webp'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🌻'
+            },
+            shooter: {
+                name: '布丁黃油射手',
+                pageUrl: 'https://ibb.co/B53FGrGj',
+                candidateUrls: [
+                    'https://i.ibb.co/B53FGrGj/image.png',
+                    'https://i.ibb.co/B53FGrGj/image.jpg',
+                    'https://i.ibb.co/B53FGrGj/image.webp'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🍮'
+            },
+            wallnut: {
+                name: '堅果',
+                pageUrl: 'https://ibb.co/Mx9ZjMYW',
+                candidateUrls: [
+                    'https://i.ibb.co/Mx9ZjMYW/image.png',
+                    'https://i.ibb.co/Mx9ZjMYW/image.jpg',
+                    'https://i.ibb.co/Mx9ZjMYW/wallnut.png',
+                    'https://i.ibb.co/Mx9ZjMYW/wallnut.jpg'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🥔'
+            },
+            chomper: {
+                name: '食人花',
+                pageUrl: 'https://ibb.co/2Ytdkj3r',
+                candidateUrls: [
+                    'https://i.ibb.co/2Ytdkj3r/image.png',
+                    'https://i.ibb.co/2Ytdkj3r/image.jpg',
+                    'https://i.ibb.co/2Ytdkj3r/image.webp'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🪻'
+            },
+            cherry: {
+                name: '櫻桃炸彈',
+                pageUrl: 'https://ibb.co/LdSL1JX7',
+                candidateUrls: [
+                    'https://i.ibb.co/LdSL1JX7/image.png',
+                    'https://i.ibb.co/LdSL1JX7/image.jpg',
+                    'https://i.ibb.co/LdSL1JX7/image.webp'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🍒'
+            },
+            chubby: {
+                name: '一般小胖子殭屍',
+                pageUrl: 'https://ibb.co/wrwdLsPt',
+                candidateUrls: [
+                    'https://i.ibb.co/wrwdLsPt/image.png',
+                    'https://i.ibb.co/wrwdLsPt/image.jpg',
+                    'https://i.ibb.co/wrwdLsPt/image.webp'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🧟'
+            },
+            zombie: {
+                name: '香菇炸彈',
+                pageUrl: 'https://ibb.co/wNPBchGd',
+                candidateUrls: [
+                    'https://i.ibb.co/wNPBchGd/image.png',
+                    'https://i.ibb.co/wNPBchGd/image.jpg',
+                    'https://i.ibb.co/wNPBchGd/image.webp'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🍄'
+            },
+            polevaulter: {
+                name: '撐竿跳殭屍',
+                pageUrl: 'https://ibb.co/RT6y8fQP',
+                candidateUrls: [
+                    'https://i.ibb.co/RT6y8fQP/image.png',
+                    'https://i.ibb.co/RT6y8fQP/image.jpg',
+                    'https://i.ibb.co/RT6y8fQP/image.webp'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🏃'
+            },
+            wheelchair: {
+                name: '輪椅殭屍（坦克）',
+                pageUrl: 'https://ibb.co/1YjbfDRK',
+                candidateUrls: [
+                    'https://i.ibb.co/1YjbfDRK/image.png',
+                    'https://i.ibb.co/1YjbfDRK/image.jpg',
+                    'https://i.ibb.co/1YjbfDRK/image.webp'
+                ],
+                activeUrl: '',
+                fallbackEmoji: '🦽'
+            }
+        };
+
+        /**
+         * 全域遊戲狀態物件
+         */
+        const gameState = {
+            isRunning: false,
+            currentStageId: 1,
+            clearedStages: [],
+            sun: 200,
+            score: 0,
+            wave: 1,
+            totalWaves: 2,
+            zombiesSpawnedInWave: 0,
+            zombiesPerWave: 5,
+            selectedSeed: null,
+            cooldowns: {
+                sunflower: 0,
+                shooter: 0,
+                wallnut: 0,
+                chomper: 0,
+                cherry: 0
+            },
+            grid: [],
+            zombies: [],
+            projectiles: [],       // 植物黃油子彈
+            enemyProjectiles: [],  // 殭屍陣營投射物（香菇炸彈扇形分裂炸彈）
+            activeTimeouts: new Set(),
+            spawnTimeoutId: null,
+            naturalSunTimer: 0,
+            spawnTimer: 0,
+            lastFrameTime: 0,
+            nextEntityId: 1,
+            loopId: null
+        };
+
+        /**
+         * 註冊可安全追蹤與自動銷毀的延時任務
+         */
+        function scheduleGameTimeout(callback, delayMs) {
+            const id = setTimeout(() => {
+                gameState.activeTimeouts.delete(id);
+                callback();
+            }, delayMs);
+            gameState.activeTimeouts.add(id);
+            return id;
+        }
+
+        /**
+         * 停止所有執行中的動畫幀與延遲計時器
+         */
+        function stopAllTimers() {
+            if (gameState.loopId !== null) {
+                cancelAnimationFrame(gameState.loopId);
+                gameState.loopId = null;
+            }
+            if (gameState.spawnTimeoutId !== null) {
+                clearTimeout(gameState.spawnTimeoutId);
+                gameState.spawnTimeoutId = null;
+            }
+            gameState.activeTimeouts.forEach((id) => clearTimeout(id));
+            gameState.activeTimeouts.clear();
+        }
+
+        /**
+         * 讀取與儲存通關星章紀錄
+         */
+        function loadClearedStages() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_CLEARED);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        gameState.clearedStages = parsed.filter(id => typeof id === 'number');
+                    }
+                }
+            } catch (e) {
+                gameState.clearedStages = [];
+            }
+        }
+
+        function saveClearedStage(stageId) {
+            if (!gameState.clearedStages.includes(stageId)) {
+                gameState.clearedStages.push(stageId);
+                try {
+                    localStorage.setItem(STORAGE_KEY_CLEARED, JSON.stringify(gameState.clearedStages));
+                } catch (e) {
+                    // 忽略無痕模式儲存限制
+                }
+            }
+        }
+
+        function getCurrentStageConfig() {
+            return STAGE_CONFIGS.find(s => s.id === gameState.currentStageId) || STAGE_CONFIGS[0];
+        }
+
+        /**
+         * 渲染選關彈窗中的 5 張關卡難度卡片
+         */
+        function renderStageCards() {
+            const container = document.getElementById('stage-cards-container');
+            const badgeEl = document.getElementById('cleared-count-badge');
+            if (!container) return;
+
+            if (badgeEl) {
+                badgeEl.textContent = `已通關：${gameState.clearedStages.length} / ${STAGE_CONFIGS.length} 關`;
+            }
+
+            container.innerHTML = '';
+            STAGE_CONFIGS.forEach((stage) => {
+                const isSelected = stage.id === gameState.currentStageId;
+                const isCleared = gameState.clearedStages.includes(stage.id);
+
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.onclick = () => selectStage(stage.id);
+                card.className = `relative text-left p-2 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
+                    isSelected
+                        ? 'bg-amber-50 border-amber-600 ring-4 ring-yellow-400/80 shadow-lg scale-[1.02]'
+                        : 'bg-white/80 hover:bg-white border-amber-800/30 opacity-90 hover:opacity-100'
+                }`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-1 mb-0.5">
+                            <span class="text-xs font-black text-amber-950">第 ${stage.id} 關</span>
+                            <span class="text-[10px] font-black px-1.5 py-0.5 rounded-md ${stage.badgeClass}">${stage.difficulty}</span>
+                        </div>
+                        <div class="text-xs font-black text-amber-900 leading-tight mb-0.5">${stage.name}</div>
+                        <div class="text-[10px] font-bold text-amber-600 tracking-tighter mb-0.5">${stage.stars}</div>
+                        <p class="text-[10px] text-slate-600 leading-snug line-clamp-2">${stage.description}</p>
+                    </div>
+                    <div class="mt-1.5 pt-1 border-t border-amber-900/15 flex items-center justify-between text-[10px] font-extrabold">
+                        <span class="text-emerald-800">🌊 ${stage.waves.length}波 • ☀️${stage.initialSun}</span>
+                        ${isCleared ? '<span class="text-amber-600">⭐已通關</span>' : '<span class="text-slate-400">未通關</span>'}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            updateOverlayPrimaryButton();
+        }
+
+        function updateOverlayPrimaryButton() {
+            const stage = getCurrentStageConfig();
+            const startBtn = document.getElementById('overlay-start-btn');
+            const secondaryBtn = document.getElementById('overlay-secondary-btn');
+            if (startBtn) {
+                startBtn.textContent = `🚀 開始第 ${stage.id} 關：${stage.name}（${stage.difficulty}）`;
+                startBtn.onclick = () => startGame();
+            }
+            if (secondaryBtn) {
+                secondaryBtn.classList.add('hidden');
+            }
+        }
+
+        function selectStage(stageId) {
+            gameState.currentStageId = stageId;
+            renderStageCards();
+        }
+
+        function openStageSelectModal() {
+            gameState.isRunning = false;
+            stopAllTimers();
+
+            const overlay = document.getElementById('game-overlay');
+            const titleEl = document.getElementById('overlay-title');
+            const descEl = document.getElementById('overlay-desc');
+
+            if (titleEl) titleEl.textContent = '🌻 218家族—植物大戰殭屍 🍄';
+            if (descEl) descEl.textContent = '點選下方任意難度關卡即可切換戰場配置，率領 218家族挑戰更高星級的屍潮！';
+
+            renderStageCards();
+            if (overlay) overlay.classList.remove('hidden');
+        }
+
+        /**
+         * ==========================================
+         * 2. ImgBB 圖片直鏈解析與本地匯入機制
+         * ==========================================
+         */
+        function verifyImageLoadable(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        }
+
+        async function resolveImgbbDirectUrl(roleKey) {
+            const cfg = CHARACTER_CONFIG[roleKey];
+            const statusEl = document.getElementById(`status-${roleKey}`);
+
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 4000);
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(cfg.pageUrl)}`;
+                const res = await fetch(proxyUrl, { signal: controller.signal });
+                clearTimeout(timer);
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const html = data.contents || '';
+                    const match = html.match(/https:\/\/i\.ibb\.co\/[^"'\s>]+/i);
+                    if (match && match[0]) {
+                        const ok = await verifyImageLoadable(match[0]);
+                        if (ok) {
+                            cfg.activeUrl = match[0];
+                            applyCharacterImage(roleKey, cfg.activeUrl);
+                            if (statusEl) statusEl.textContent = '✅ 已成功載入 ImgBB 照片';
+                            return;
+                        }
+                    }
+                }
+            } catch (err) {
+                // 逾時或失敗時進入候選直鏈測試
+            }
+
+            testCandidateUrls(roleKey, 0);
+        }
+
+        function testCandidateUrls(roleKey, index) {
+            const cfg = CHARACTER_CONFIG[roleKey];
+            const statusEl = document.getElementById(`status-${roleKey}`);
+
+            if (index >= cfg.candidateUrls.length) {
+                const fallbackSvg = `data:image/svg+xml;utf8,${encodeURIComponent(
+                    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                        <defs>
+                            <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#fef9c3"/>
+                                <stop offset="100%" stop-color="#fde68a"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="100" height="100" rx="22" fill="url(#bg)" stroke="#d97706" stroke-width="4"/>
+                        <text x="50" y="68" font-size="56" text-anchor="middle">${cfg.fallbackEmoji}</text>
+                    </svg>`
+                )}`;
+                cfg.activeUrl = fallbackSvg;
+                applyCharacterImage(roleKey, fallbackSvg);
+                if (statusEl) {
+                    statusEl.textContent = '⚠️ 網頁連結受限，可點右側載入本機照片';
+                    statusEl.className = 'text-[10px] text-amber-400 truncate';
+                }
+                return;
+            }
+
+            const testImg = new Image();
+            testImg.onload = () => {
+                cfg.activeUrl = cfg.candidateUrls[index];
+                applyCharacterImage(roleKey, cfg.activeUrl);
+                if (statusEl) statusEl.textContent = '✅ 已載入照片';
+            };
+            testImg.onerror = () => {
+                testCandidateUrls(roleKey, index + 1);
+            };
+            testImg.src = cfg.candidateUrls[index];
+        }
+
+        function applyCharacterImage(roleKey, url) {
+            const previewMap = {
+                sunflower: ['preview-sunflower', 'modal-img-sunflower', 'cfg-img-sunflower'],
+                shooter: ['preview-shooter', 'modal-img-shooter', 'cfg-img-shooter'],
+                wallnut: ['preview-wallnut', 'modal-img-wallnut', 'cfg-img-wallnut'],
+                chomper: ['preview-chomper', 'modal-img-chomper', 'cfg-img-chomper'],
+                cherry: ['preview-cherry', 'modal-img-cherry', 'cfg-img-cherry'],
+                chubby: ['modal-img-chubby', 'cfg-img-chubby'],
+                zombie: ['modal-img-zombie', 'cfg-img-zombie'],
+                polevaulter: ['modal-img-polevaulter', 'cfg-img-polevaulter'],
+                wheelchair: ['modal-img-wheelchair', 'cfg-img-wheelchair']
+            };
+
+            const targetIds = previewMap[roleKey] || [];
+            targetIds.forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) el.src = url;
+            });
+
+            document.querySelectorAll(`img[data-role="${roleKey}"]`).forEach((img) => {
+                img.src = url;
+            });
+        }
+
+        function handleLocalUpload(event, roleKey) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+                CHARACTER_CONFIG[roleKey].activeUrl = dataUrl;
+                applyCharacterImage(roleKey, dataUrl);
+                const statusEl = document.getElementById(`status-${roleKey}`);
+                if (statusEl) {
+                    statusEl.textContent = '✅ 已套用本機照片';
+                    statusEl.className = 'text-[10px] text-emerald-400 truncate';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openImageModal() {
+            const modal = document.getElementById('image-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        /**
+         * ==========================================
+         * 3. 5×9 草皮網格初始化與種植/鏟除互動
+         * ==========================================
+         */
+        function initGridUI() {
+            const gridLayer = document.getElementById('grid-layer');
+            if (!gridLayer) return;
+            gridLayer.innerHTML = '';
+
+            gameState.grid = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const cell = document.createElement('div');
+                    const isEven = (r + c) % 2 === 0;
+                    cell.className = `lawn-cell border border-emerald-950/20 cursor-pointer transition-colors ${
+                        isEven ? 'lawn-cell-even' : 'lawn-cell-odd'
+                    }`;
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.addEventListener('click', () => handleCellClick(r, c));
+                    gridLayer.appendChild(cell);
+                }
+            }
+        }
+
+        function selectSeed(type) {
+            if (!gameState.isRunning) return;
+
+            if (type !== 'shovel') {
+                const stats = PLANT_STATS[type];
+                if (!stats) return;
+                if (gameState.cooldowns[type] > 0) {
+                    showBanner(`⏳ ${CHARACTER_CONFIG[type].name} 正在冷卻中，請稍候！`);
+                    return;
+                }
+                if (gameState.sun < stats.cost) {
+                    showBanner(`☀️ 陽光不足！種植 ${CHARACTER_CONFIG[type].name} 需要 ${stats.cost} 陽光。`);
+                    return;
+                }
+            }
+
+            gameState.selectedSeed = gameState.selectedSeed === type ? null : type;
+            updateSeedCardsUI();
+
+            if (gameState.selectedSeed === 'shovel') {
+                showBanner('⛏️ 已拿起鏟子：點擊場上任意植物即可移除。');
+            } else if (gameState.selectedSeed) {
+                showBanner(`🌱 已選擇「${CHARACTER_CONFIG[type].name}」，請點擊草地格子進行部署！`);
+            }
+        }
+
+        function handleCellClick(row, col) {
+            if (!gameState.isRunning || !gameState.selectedSeed) return;
+
+            if (gameState.selectedSeed === 'shovel') {
+                if (gameState.grid[row][col]) {
+                    removePlant(row, col);
+                    showBanner('⛏️ 已移除植物！');
+                }
+                gameState.selectedSeed = null;
+                updateSeedCardsUI();
+                return;
+            }
+
+            const type = gameState.selectedSeed;
+            const stats = PLANT_STATS[type];
+            if (!stats) return;
+
+            if (gameState.grid[row][col]) {
+                showBanner('⚠️ 這格已經種有植物了，請選擇空草地！');
+                return;
+            }
+
+            if (gameState.sun < stats.cost || gameState.cooldowns[type] > 0) {
+                gameState.selectedSeed = null;
+                updateSeedCardsUI();
+                return;
+            }
+
+            placePlant(type, row, col);
+        }
+
+        function placePlant(type, row, col) {
+            const stats = PLANT_STATS[type];
+            gameState.sun -= stats.cost;
+            gameState.cooldowns[type] = stats.cooldown;
+            gameState.selectedSeed = null;
+
+            const plant = {
+                id: gameState.nextEntityId++,
+                type: type,
+                row: row,
+                col: col,
+                hp: stats.hp,
+                maxHp: stats.hp,
+                actionTimer: type === 'sunflower' ? stats.initialDelay : 250,
+                digestTimer: 0,
+                fuseTimerId: null,
+                el: null
+            };
+
+            const el = document.createElement('div');
+            el.className = 'absolute flex items-center justify-center transition-transform duration-150';
+            el.style.width = `${100 / COLS}%`;
+            el.style.height = `${100 / ROWS}%`;
+            el.style.left = `${(col / COLS) * 100}%`;
+            el.style.top = `${(row / ROWS) * 100}%`;
+
+            if (type === 'cherry') {
+                el.innerHTML = `
+                    <div class="relative w-[84%] h-[84%] flex items-center justify-center cherry-arming">
+                        <img data-role="cherry" src="${CHARACTER_CONFIG.cherry.activeUrl}" alt="櫻桃炸彈"
+                             class="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(225,29,72,0.85)] rounded-xl">
+                    </div>
+                `;
+                document.getElementById('entities-layer').appendChild(el);
+                plant.el = el;
+                gameState.grid[row][col] = plant;
+
+                updateHUD();
+                updateSeedCardsUI();
+                showBanner('🍒 櫻桃炸彈已部署！即將引爆周圍 3×3 範圍！');
+
+                plant.fuseTimerId = scheduleGameTimeout(() => {
+                    triggerCherryBomb(plant);
+                }, stats.fuseTime);
+                return;
+            }
+
+            const digestBarHtml = type === 'chomper'
+                ? `<div class="digest-wrap hidden absolute -top-1.5 w-4/5 h-1.5 bg-purple-950/90 rounded-full overflow-hidden border border-purple-300 z-10">
+                       <div class="digest-bar h-full bg-gradient-to-r from-fuchsia-400 to-amber-300 transition-all duration-100" style="width: 100%"></div>
+                   </div>
+                   <div class="chomper-aura hidden absolute inset-0 rounded-full bg-purple-500/35 blur-xs animate-pulse pointer-events-none"></div>`
+                : '';
+
+            el.innerHTML = `
+                <div class="relative w-[82%] h-[82%] flex items-center justify-center">
+                    ${digestBarHtml}
+                    <img data-role="${type}" src="${CHARACTER_CONFIG[type].activeUrl}" alt="${CHARACTER_CONFIG[type].name}"
+                         class="plant-sprite w-full h-full object-contain drop-shadow-[0_4px_4px_rgba(0,0,0,0.55)] rounded-xl">
+                    <div class="absolute -bottom-0.5 w-4/5 h-1.5 bg-gray-900/80 rounded-full overflow-hidden border border-black">
+                        <div class="hp-bar h-full bg-emerald-400 transition-all duration-150" style="width: 100%"></div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('entities-layer').appendChild(el);
+            plant.el = el;
+            gameState.grid[row][col] = plant;
+
+            updateHUD();
+            updateSeedCardsUI();
+            if (type === 'wallnut') {
+                showBanner('🥔 已部署堅果防線！擁有 650 點超高生命值，可穩固阻擋重裝坦克與香菇分裂炸彈！');
+            } else if (type === 'chomper') {
+                showBanner('🪻 已種下食人花！可一口吞噬前方 1.35 格內的地面殭屍或重創輪椅坦克！');
+            } else {
+                showBanner(`✅ 已種下 ${CHARACTER_CONFIG[type].name}！`);
+            }
+        }
+
+        /**
+         * 統一處理植物受傷、血條更新、堅果兩階段裂痕視覺與陣亡移除
+         */
+        function damagePlantAt(row, col, damageAmount) {
+            const plant = gameState.grid[row]?.[col];
+            if (!plant || plant.type === 'cherry') return;
+
+            plant.hp -= damageAmount;
+            if (plant.hp <= 0) {
+                removePlant(row, col);
+            } else {
+                refreshPlantVisualDamage(plant);
+            }
+        }
+
+        /**
+         * 更新植物血條與堅果受損階段視覺回饋（<66% 輕度裂痕、<33% 嚴重裂痕）
+         */
+        function refreshPlantVisualDamage(plant) {
+            if (!plant || !plant.el) return;
+            const hpRatio = Math.max(0, plant.hp / plant.maxHp);
+            const hpBar = plant.el.querySelector('.hp-bar');
+            if (hpBar) {
+                hpBar.style.width = `${hpRatio * 100}%`;
+                if (plant.type === 'wallnut') {
+                    if (hpRatio < 0.33) {
+                        hpBar.className = 'hp-bar h-full bg-rose-500 transition-all duration-150';
+                    } else if (hpRatio < 0.66) {
+                        hpBar.className = 'hp-bar h-full bg-amber-400 transition-all duration-150';
+                    } else {
+                        hpBar.className = 'hp-bar h-full bg-emerald-400 transition-all duration-150';
+                    }
+                }
+            }
+
+            if (plant.type === 'wallnut') {
+                const sprite = plant.el.querySelector('.plant-sprite');
+                if (sprite) {
+                    sprite.classList.toggle('wallnut-damaged-1', hpRatio < 0.66 && hpRatio >= 0.33);
+                    sprite.classList.toggle('wallnut-damaged-2', hpRatio < 0.33);
+                }
+            }
+        }
+
+        function removePlant(row, col) {
+            const plant = gameState.grid[row]?.[col];
+            if (plant) {
+                if (plant.fuseTimerId !== null) {
+                    clearTimeout(plant.fuseTimerId);
+                    gameState.activeTimeouts.delete(plant.fuseTimerId);
+                    plant.fuseTimerId = null;
+                }
+                if (plant.el) plant.el.remove();
+                gameState.grid[row][col] = null;
+            }
+        }
+
+        /**
+         * 櫻桃炸彈 3×3 範圍爆炸判定
+         */
+        function triggerCherryBomb(bombPlant) {
+            if (!bombPlant || bombPlant.exploded) return;
+            bombPlant.exploded = true;
+
+            const centerRow = bombPlant.row;
+            const centerCol = bombPlant.col;
+            const currentCellPlant = gameState.grid[centerRow]?.[centerCol];
+            if (currentCellPlant && currentCellPlant.id === bombPlant.id) {
+                removePlant(centerRow, centerCol);
+            } else if (bombPlant.el) {
+                bombPlant.el.remove();
+            }
+
+            if (!gameState.isRunning) return;
+
+            const centerX = ((centerCol + 0.5) / COLS) * 100;
+            const centerY = ((centerRow + 0.5) / ROWS) * 100;
+
+            const boomEl = document.createElement('div');
+            boomEl.className = 'absolute pointer-events-none flex items-center justify-center z-40';
+            boomEl.style.width = `${(3 / COLS) * 100}%`;
+            boomEl.style.height = `${(3 / ROWS) * 100}%`;
+            boomEl.style.left = `${((centerCol - 1) / COLS) * 100}%`;
+            boomEl.style.top = `${((centerRow - 1) / ROWS) * 100}%`;
+            boomEl.innerHTML = `
+                <div class="w-full h-full rounded-full bg-radial from-yellow-200 via-orange-500/85 to-rose-600/0 animate-ping flex items-center justify-center text-4xl sm:text-5xl font-black text-white drop-shadow-[0_0_16px_#ef4444]">
+                    💥
+                </div>
+            `;
+            document.getElementById('entities-layer').appendChild(boomEl);
+            scheduleGameTimeout(() => {
+                if (boomEl.parentNode) boomEl.remove();
+            }, 550);
+
+            showFloatingText(centerX - 4, centerY - 6, '💥 櫻桃大爆炸!', 'text-rose-300');
+
+            const cellWidthPct = 100 / COLS;
+            const maxHorizDist = cellWidthPct * 1.65;
+            let hitCount = 0;
+
+            for (let i = gameState.zombies.length - 1; i >= 0; i--) {
+                const z = gameState.zombies[i];
+                if (!z) continue;
+                const rowDiff = Math.abs(z.row - centerRow);
+                const horizDiff = Math.abs(z.x - centerX);
+
+                if (rowDiff <= 1 && horizDiff <= maxHorizDist) {
+                    hitCount++;
+                    z.hp -= PLANT_STATS.cherry.damage;
+                    showFloatingText(z.x, (z.row / ROWS) * 100 + 2, `💥 -${PLANT_STATS.cherry.damage}`, 'text-orange-300');
+
+                    if (z.hp <= 0) {
+                        destroyZombieByRef(z);
+                    } else {
+                        const hpPct = Math.max(0, (z.hp / z.maxHp) * 100);
+                        const hpBar = z.el?.querySelector('.hp-bar');
+                        if (hpBar) hpBar.style.width = `${hpPct}%`;
+                    }
+                }
+            }
+
+            if (hitCount > 0) {
+                showBanner(`🍒 櫻桃炸彈命中了 ${hitCount} 隻殭屍！`);
+            }
+        }
+
+        /**
+         * ==========================================
+         * 4. 殭屍陣營敵人生成與「香菇炸彈」扇形分裂炸彈機制
+         * ==========================================
+         */
+        function spawnMushroomClusterBombs(originX, originRow, ignoreCol = null) {
+            if (!gameState.isRunning) return;
+
+            const entitiesLayer = document.getElementById('entities-layer');
+            if (!entitiesLayer) return;
+
+            showFloatingText(originX, (originRow / ROWS) * 100 - 3, '🍄 分裂炸彈!', 'text-fuchsia-300');
+
+            const fanTrajectories = [
+                { vx: -28, vy: -0.75, angleDeg: -22 },
+                { vx: -31, vy: 0,     angleDeg: 0 },
+                { vx: -28, vy: 0.75,  angleDeg: 22 }
+            ];
+
+            fanTrajectories.forEach((traj) => {
+                const bomb = {
+                    id: gameState.nextEntityId++,
+                    x: originX,
+                    rowPos: originRow,
+                    vx: traj.vx,
+                    vy: traj.vy,
+                    damage: MUSHROOM_CLUSTER_DAMAGE, // 45 點傷害（爆炸 90 的一半）
+                    ignoreRow: ignoreCol !== null ? originRow : -1,
+                    ignoreCol: ignoreCol !== null ? ignoreCol : -1,
+                    el: null
+                };
+
+                const el = document.createElement('div');
+                el.className = 'absolute flex items-center justify-center pointer-events-none z-30';
+                el.style.width = '4.2%';
+                el.style.height = `${100 / ROWS}%`;
+                el.style.left = `${bomb.x}%`;
+                el.style.top = `${(bomb.rowPos / ROWS) * 100}%`;
+
+                el.innerHTML = `
+                    <div class="relative flex items-center justify-center" style="transform: rotate(${traj.angleDeg}deg);">
+                        <div class="absolute w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-fuchsia-500/45 blur-xs animate-ping"></div>
+                        <div class="cluster-bomb-orb relative w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-rose-400 via-fuchsia-600 to-purple-900 border-2 border-amber-300 shadow-[0_0_12px_#e879f9] flex items-center justify-center text-xs sm:text-sm">
+                            🍄
+                        </div>
+                    </div>
+                `;
+
+                entitiesLayer.appendChild(el);
+                bomb.el = el;
+                gameState.enemyProjectiles.push(bomb);
+            });
+        }
+
+        function spawnZombieEnemy(forceType = null, excludeRow = -1) {
+            const stage = getCurrentStageConfig();
+
+            let row = Math.floor(Math.random() * ROWS);
+            if (excludeRow >= 0 && ROWS > 1) {
+                const candidateRows = [];
+                for (let r = 0; r < ROWS; r++) {
+                    if (r !== excludeRow) candidateRows.push(r);
+                }
+                row = candidateRows[Math.floor(Math.random() * candidateRows.length)];
+            }
+
+            let enemyType = forceType;
+            if (!enemyType) {
+                const weights = stage.getEnemyWeights(gameState.wave, gameState.zombiesSpawnedInWave);
+                const roll = Math.random();
+                const wChubby = weights.chubby || 0;
+                const wZombie = weights.zombie || 0;
+                const wPole = weights.polevaulter || 0;
+
+                if (roll < wChubby) {
+                    enemyType = 'chubby';
+                } else if (roll < wChubby + wZombie) {
+                    enemyType = 'zombie';
+                } else if (roll < wChubby + wZombie + wPole) {
+                    enemyType = 'polevaulter';
+                } else {
+                    enemyType = 'wheelchair';
+                }
+            }
+
+            const waveStepBonus = 1 + (gameState.wave - 1) * 0.08;
+            const totalHpMult = stage.hpMultiplier * waveStepBonus;
+            const totalSpeedMult = stage.speedMultiplier * (1 + (gameState.wave - 1) * 0.04);
+
+            const isChubby = enemyType === 'chubby';
+            const isPoleVaulter = enemyType === 'polevaulter';
+            const isTank = enemyType === 'wheelchair';
+
+            let baseHp = 100;
+            let baseSpeed = 4.4;
+            if (isTank) {
+                baseHp = 360;
+                baseSpeed = 2.4;
+            } else if (isPoleVaulter) {
+                baseHp = 145;
+                baseSpeed = 7.2;
+            } else if (isChubby) {
+                baseHp = 140;
+                baseSpeed = 3.5;
+            } else {
+                baseHp = 100;
+                baseSpeed = 4.4;
+            }
+
+            const maxHp = Math.max(40, Math.round(baseHp * totalHpMult));
+            const finalSpeed = baseSpeed * totalSpeedMult;
+            const postVaultSpeed = 3.8 * totalSpeedMult;
+
+            const zombie = {
+                id: gameState.nextEntityId++,
+                type: enemyType,
+                row: row,
+                x: 96,
+                hp: maxHp,
+                maxHp: maxHp,
+                speed: finalSpeed,
+                postVaultSpeed: postVaultSpeed,
+                hasPole: isPoleVaulter,
+                isJumping: false,
+                chillTimer: 0,
+                biteTimer: 0,
+                el: null
+            };
+
+            const el = document.createElement('div');
+            el.className = 'absolute flex flex-col items-center justify-center';
+            el.style.width = `${100 / COLS}%`;
+            el.style.height = `${100 / ROWS}%`;
+            el.style.left = `${zombie.x}%`;
+            el.style.top = `${(row / ROWS) * 100}%`;
+
+            let auraClass = 'bg-purple-600/25 blur-sm animate-pulse';
+            let barClass = 'bg-rose-500';
+            let scaleClass = 'w-[86%] h-[86%]';
+            let poleStreakHtml = '';
+
+            if (isTank) {
+                auraClass = 'bg-amber-500/30 border-2 border-amber-400/70 shadow-[0_0_12px_rgba(245,158,11,0.5)]';
+                barClass = 'bg-gradient-to-r from-amber-400 to-orange-600';
+                scaleClass = 'w-[94%] h-[94%]';
+            } else if (isPoleVaulter) {
+                auraClass = 'bg-cyan-400/25 border border-cyan-300/60 shadow-[0_0_10px_rgba(34,211,238,0.45)]';
+                barClass = 'bg-gradient-to-r from-cyan-400 to-sky-600';
+                scaleClass = 'w-[88%] h-[88%]';
+                poleStreakHtml = `
+                    <div class="pole-prop absolute -left-2 bottom-[18%] w-[115%] h-1 bg-gradient-to-r from-cyan-200 via-amber-200 to-amber-600 rounded-full -rotate-12 shadow-[0_0_8px_rgba(34,211,238,0.9)] pointer-events-none"></div>
+                `;
+            } else if (isChubby) {
+                auraClass = 'bg-indigo-600/20';
+                barClass = 'bg-purple-500';
+            }
+
+            el.innerHTML = `
+                <div class="relative ${scaleClass} flex items-center justify-center">
+                    <div class="zombie-aura absolute inset-0 rounded-full ${auraClass}"></div>
+                    ${poleStreakHtml}
+                    <img data-role="${enemyType}" src="${CHARACTER_CONFIG[enemyType].activeUrl}" alt="${CHARACTER_CONFIG[enemyType].name}" 
+                         class="zombie-sprite w-full h-full object-contain drop-shadow-[0_6px_8px_rgba(0,0,0,0.7)] rounded-xl transition-transform">
+                    <div class="absolute -bottom-1 w-4/5 h-1.5 bg-gray-900/90 rounded-full overflow-hidden border border-black">
+                        <div class="hp-bar h-full ${barClass} transition-all duration-150" style="width: 100%"></div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('entities-layer').appendChild(el);
+            zombie.el = el;
+            gameState.zombies.push(zombie);
+
+            if (isTank) {
+                showBanner(`⚠️ 第 ${stage.id} 關警報！重裝「輪椅殭屍（坦克）」出動了，集中火力攔截！`);
+            } else if (isPoleVaulter) {
+                showBanner('🏃‍♂️ 警告！「撐竿跳殭屍」高速衝刺來襲，會飛越第一株植物！');
+            }
+
+            return row;
+        }
+
+        /**
+         * 布丁黃油射手發射黃油子彈
+         */
+        function shootButterProjectile(plant) {
+            if (plant.el) {
+                plant.el.style.transform = 'scale(1.14)';
+                scheduleGameTimeout(() => {
+                    if (plant.el) plant.el.style.transform = 'scale(1)';
+                }, 140);
+            }
+
+            const startX = ((plant.col + 0.65) / COLS) * 100;
+            const proj = {
+                id: gameState.nextEntityId++,
+                row: plant.row,
+                x: startX,
+                speed: 38,
+                damage: PLANT_STATS.shooter.damage,
+                el: null
+            };
+
+            const el = document.createElement('div');
+            el.className = 'absolute flex items-center justify-center';
+            el.style.width = '4.5%';
+            el.style.height = `${100 / ROWS}%`;
+            el.style.left = `${proj.x}%`;
+            el.style.top = `${(proj.row / ROWS) * 100}%`;
+
+            el.innerHTML = `
+                <div class="w-6 h-5 sm:w-8 sm:h-6 bg-gradient-to-br from-yellow-200 via-amber-400 to-orange-400 border-2 border-amber-700 rounded-lg shadow-[0_0_10px_#facc15] flex items-center justify-center text-[10px] font-black text-amber-950">
+                    🧈
+                </div>
+            `;
+
+            document.getElementById('entities-layer').appendChild(el);
+            proj.el = el;
+            gameState.projectiles.push(proj);
+        }
+
+        /**
+         * 生成可點擊收集的陽光（具備防連點 collected 旗標）
+         */
+        function spawnSunToken(xPercent, yPercent, amount = 25) {
+            const sunEl = document.createElement('div');
+            sunEl.className = 'sun-token absolute pointer-events-auto flex flex-col items-center justify-center select-none';
+            sunEl.style.left = `${Math.min(88, Math.max(5, xPercent))}%`;
+            sunEl.style.top = `${Math.min(82, Math.max(8, yPercent))}%`;
+            sunEl.innerHTML = `
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-yellow-300/90 border-2 border-amber-500 shadow-[0_0_16px_#fde047] flex items-center justify-center text-2xl sm:text-3xl">
+                    ☀️
+                </div>
+                <span class="text-[10px] font-black bg-amber-900/90 text-yellow-200 px-1.5 rounded-full -mt-1">+${amount}</span>
+            `;
+
+            let collected = false;
+            const collect = (e) => {
+                if (e && e.cancelable) e.preventDefault();
+                if (e) e.stopPropagation();
+                if (collected) return;
+                collected = true;
+
+                gameState.sun += amount;
+                updateHUD();
+                updateSeedCardsUI();
+                sunEl.remove();
+            };
+
+            sunEl.addEventListener('click', collect);
+            sunEl.addEventListener('touchstart', collect, { passive: false });
+
+            document.getElementById('sun-layer').appendChild(sunEl);
+
+            scheduleGameTimeout(() => {
+                if (sunEl.parentNode) sunEl.remove();
+            }, 10000);
+        }
+
+        /**
+         * 飄浮傷害與特效
+         */
+        function showFloatingText(xPercent, yPercent, text, colorClass = 'text-yellow-300') {
+            const el = document.createElement('div');
+            el.className = `damage-text absolute font-black text-sm sm:text-base drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] ${colorClass} z-40`;
+            el.style.left = `${xPercent}%`;
+            el.style.top = `${yPercent}%`;
+            el.textContent = text;
+            document.getElementById('entities-layer').appendChild(el);
+            scheduleGameTimeout(() => {
+                if (el.parentNode) el.remove();
+            }, 650);
+        }
+
+        /**
+         * ==========================================
+         * 5. 遊戲主迴圈與實體更新邏輯
+         * ==========================================
+         */
+        function gameLoop(timestamp) {
+            if (!gameState.isRunning) return;
+
+            if (!gameState.lastFrameTime) gameState.lastFrameTime = timestamp;
+            const rawDt = (timestamp - gameState.lastFrameTime) / 1000;
+            const dt = Math.min(rawDt, 0.05);
+            gameState.lastFrameTime = timestamp;
+
+            updateCooldowns(dt * 1000);
+            updateNaturalSun(dt * 1000);
+            updateWaveSpawner(dt * 1000);
+            updatePlants(dt * 1000);
+            updateProjectiles(dt);
+            updateEnemyProjectiles(dt);
+            updateZombies(dt);
+
+            if (gameState.isRunning) {
+                gameState.loopId = requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function updateCooldowns(dtMs) {
+            let changed = false;
+            for (const key of ['sunflower', 'shooter', 'wallnut', 'chomper', 'cherry']) {
+                if (gameState.cooldowns[key] > 0) {
+                    gameState.cooldowns[key] = Math.max(0, gameState.cooldowns[key] - dtMs);
+                    changed = true;
+                }
+            }
+            if (changed) updateSeedCardsUI();
+        }
+
+        function updateNaturalSun(dtMs) {
+            const stage = getCurrentStageConfig();
+            gameState.naturalSunTimer += dtMs;
+            if (gameState.naturalSunTimer >= stage.naturalSunInterval) {
+                gameState.naturalSunTimer = 0;
+                const randX = 12 + Math.random() * 75;
+                const randY = 15 + Math.random() * 65;
+                spawnSunToken(randX, randY, 25);
+            }
+        }
+
+        function updateWaveSpawner(dtMs) {
+            const stage = getCurrentStageConfig();
+            gameState.spawnTimer += dtMs;
+            const spawnInterval = Math.max(2000, stage.spawnIntervalBase - (gameState.wave - 1) * 350);
+
+            if (gameState.zombiesSpawnedInWave < gameState.zombiesPerWave) {
+                if (gameState.spawnTimer >= spawnInterval) {
+                    gameState.spawnTimer = 0;
+                    const firstRow = spawnZombieEnemy();
+                    gameState.zombiesSpawnedInWave++;
+
+                    if (
+                        gameState.zombiesSpawnedInWave < gameState.zombiesPerWave &&
+                        stage.doubleSpawnChance > 0 &&
+                        Math.random() < stage.doubleSpawnChance
+                    ) {
+                        spawnZombieEnemy(null, firstRow);
+                        gameState.zombiesSpawnedInWave++;
+                    }
+                    updateHUD();
+                }
+            } else if (gameState.zombies.length === 0) {
+                if (gameState.wave >= stage.waves.length) {
+                    winStage();
+                    return;
+                }
+
+                gameState.wave++;
+                gameState.zombiesSpawnedInWave = 0;
+                gameState.zombiesPerWave = stage.waves[gameState.wave - 1];
+
+                if (gameState.wave === stage.waves.length) {
+                    showBanner(`⚠️ 最後一波屍潮來襲（第 ${gameState.wave}/${stage.waves.length} 波）！守住防線即可過關！`);
+                } else {
+                    showBanner(`🎉 第 ${stage.id} 關 • 第 ${gameState.wave}/${stage.waves.length} 波殭屍大軍來襲！`);
+                }
+                updateHUD();
+            }
+        }
+
+        function updatePlants(dtMs) {
+            const cellWidthPct = 100 / COLS;
+
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const plant = gameState.grid[r][c];
+                    if (!plant || plant.type === 'cherry' || plant.type === 'wallnut') continue;
+
+                    // 處理食人花咀嚼消化冷卻狀態
+                    if (plant.type === 'chomper') {
+                        if (plant.digestTimer > 0) {
+                            plant.digestTimer = Math.max(0, plant.digestTimer - dtMs);
+                            const digestBar = plant.el?.querySelector('.digest-bar');
+                            if (digestBar) {
+                                const pct = (plant.digestTimer / PLANT_STATS.chomper.digestDuration) * 100;
+                                digestBar.style.width = `${pct}%`;
+                            }
+                            if (plant.digestTimer === 0) {
+                                const sprite = plant.el?.querySelector('.plant-sprite');
+                                const wrap = plant.el?.querySelector('.digest-wrap');
+                                const aura = plant.el?.querySelector('.chomper-aura');
+                                if (sprite) sprite.classList.remove('chomper-chewing');
+                                if (wrap) wrap.classList.add('hidden');
+                                if (aura) aura.classList.add('hidden');
+                                showFloatingText(((c + 0.3) / COLS) * 100, (r / ROWS) * 100, '🪻 消化完成!', 'text-purple-300');
+                            }
+                            continue;
+                        }
+
+                        // 待機狀態：偵測同列前方 0 至 +1.35 格範圍內的最近地面殭屍（排除空中 isJumping 撐竿跳殭屍）
+                        const plantCenterX = ((c + 0.5) / COLS) * 100;
+                        let targetZombie = null;
+                        let minDist = Infinity;
+
+                        for (let i = 0; i < gameState.zombies.length; i++) {
+                            const z = gameState.zombies[i];
+                            if (!z || z.row !== r || z.isJumping) continue;
+                            const deltaX = z.x - plantCenterX;
+                            if (deltaX >= -cellWidthPct * 0.25 && deltaX <= cellWidthPct * 1.35) {
+                                if (Math.abs(deltaX) < minDist) {
+                                    minDist = Math.abs(deltaX);
+                                    targetZombie = z;
+                                }
+                            }
+                        }
+
+                        if (targetZombie) {
+                            if (plant.el) {
+                                plant.el.style.transform = 'scale(1.28) translateX(12%)';
+                                scheduleGameTimeout(() => {
+                                    if (plant.el) plant.el.style.transform = 'scale(1) translateX(0)';
+                                }, 210);
+                            }
+
+                            if (targetZombie.type === 'wheelchair') {
+                                const dmg = PLANT_STATS.chomper.tankBiteDamage;
+                                targetZombie.hp -= dmg;
+
+                                if (targetZombie.hp <= 0) {
+                                    showFloatingText(targetZombie.x, (r / ROWS) * 100, '🪻 吞滅坦克!', 'text-fuchsia-300');
+                                    destroyZombieByRef(targetZombie);
+                                } else {
+                                    showFloatingText(targetZombie.x, (r / ROWS) * 100, `🦷 重咬 -${dmg}!`, 'text-fuchsia-300');
+                                    const hpPct = Math.max(0, (targetZombie.hp / targetZombie.maxHp) * 100);
+                                    const hpBar = targetZombie.el?.querySelector('.hp-bar');
+                                    if (hpBar) hpBar.style.width = `${hpPct}%`;
+                                }
+
+                                plant.digestTimer = PLANT_STATS.chomper.digestDuration;
+                            } else {
+                                showFloatingText(targetZombie.x, (r / ROWS) * 100, '🪻 一口吞噬!', 'text-fuchsia-300');
+                                destroyZombieByRef(targetZombie);
+                                plant.digestTimer = PLANT_STATS.chomper.digestDuration;
+                            }
+
+                            const sprite = plant.el?.querySelector('.plant-sprite');
+                            const wrap = plant.el?.querySelector('.digest-wrap');
+                            const aura = plant.el?.querySelector('.chomper-aura');
+                            const digestBar = plant.el?.querySelector('.digest-bar');
+                            if (sprite) sprite.classList.add('chomper-chewing');
+                            if (wrap) wrap.classList.remove('hidden');
+                            if (aura) aura.classList.remove('hidden');
+                            if (digestBar) digestBar.style.width = '100%';
+                        }
+                        continue;
+                    }
+
+                    plant.actionTimer -= dtMs;
+
+                    if (plant.type === 'sunflower') {
+                        if (plant.actionTimer <= 0) {
+                            plant.actionTimer = PLANT_STATS.sunflower.produceInterval;
+                            const px = ((c + 0.35) / COLS) * 100;
+                            const py = ((r + 0.25) / ROWS) * 100;
+                            spawnSunToken(px, py, 25);
+                        }
+                    } else if (plant.type === 'shooter') {
+                        const hasTargetInRow = gameState.zombies.some(z => z.row === r && z.x > (c / COLS) * 100);
+                        if (hasTargetInRow && plant.actionTimer <= 0) {
+                            plant.actionTimer = PLANT_STATS.shooter.fireInterval;
+                            shootButterProjectile(plant);
+                        }
+                    }
+                }
+            }
+        }
+
+        function updateProjectiles(dt) {
+            for (let i = gameState.projectiles.length - 1; i >= 0; i--) {
+                const proj = gameState.projectiles[i];
+                proj.x += proj.speed * dt;
+                if (proj.el) proj.el.style.left = `${proj.x}%`;
+
+                let hit = false;
+                for (let j = 0; j < gameState.zombies.length; j++) {
+                    const z = gameState.zombies[j];
+                    if (z && z.row === proj.row && Math.abs(z.x - proj.x) < 4.5) {
+                        z.hp -= proj.damage;
+                        z.chillTimer = z.type === 'wheelchair' ? 1.25 : 2.5;
+                        hit = true;
+
+                        const hpPct = Math.max(0, (z.hp / z.maxHp) * 100);
+                        const hpBar = z.el?.querySelector('.hp-bar');
+                        if (hpBar) hpBar.style.width = `${hpPct}%`;
+
+                        const sprite = z.el?.querySelector('.zombie-sprite');
+                        if (sprite) sprite.style.filter = 'sepia(0.8) saturate(3) brightness(1.1)';
+
+                        showFloatingText(z.x, (z.row / ROWS) * 100 + 4, `-${proj.damage} 🧈`, 'text-yellow-300');
+
+                        if (z.hp <= 0) {
+                            destroyZombieByRef(z);
+                        }
+                        break;
+                    }
+                }
+
+                if (hit || proj.x > 102) {
+                    if (proj.el) proj.el.remove();
+                    gameState.projectiles.splice(i, 1);
+                }
+            }
+        }
+
+        /**
+         * 更新香菇炸彈發射的「扇形分裂炸彈」飛行軌跡與植物命中傷害 (45 點)
+         */
+        function updateEnemyProjectiles(dt) {
+            for (let i = gameState.enemyProjectiles.length - 1; i >= 0; i--) {
+                const bomb = gameState.enemyProjectiles[i];
+                bomb.x += bomb.vx * dt;
+                bomb.rowPos += bomb.vy * dt;
+
+                if (bomb.el) {
+                    bomb.el.style.left = `${bomb.x}%`;
+                    bomb.el.style.top = `${(bomb.rowPos / ROWS) * 100}%`;
+                }
+
+                if (bomb.x <= 1 || bomb.rowPos < -0.3 || bomb.rowPos > ROWS - 0.7) {
+                    if (bomb.el) bomb.el.remove();
+                    gameState.enemyProjectiles.splice(i, 1);
+                    continue;
+                }
+
+                const curRow = Math.round(bomb.rowPos);
+                const curCol = Math.floor(((bomb.x + 2) / 100) * COLS);
+
+                if (curRow >= 0 && curRow < ROWS && curCol >= 0 && curCol < COLS) {
+                    if (curRow === bomb.ignoreRow && curCol === bomb.ignoreCol) {
+                        continue;
+                    }
+
+                    const targetPlant = gameState.grid[curRow][curCol];
+                    if (targetPlant && targetPlant.type !== 'cherry') {
+                        const burstEl = document.createElement('div');
+                        burstEl.className = 'absolute pointer-events-none flex items-center justify-center z-40';
+                        burstEl.style.width = `${100 / COLS}%`;
+                        burstEl.style.height = `${100 / ROWS}%`;
+                        burstEl.style.left = `${(curCol / COLS) * 100}%`;
+                        burstEl.style.top = `${(curRow / ROWS) * 100}%`;
+                        burstEl.innerHTML = `
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-fuchsia-500/75 border-2 border-amber-300 animate-ping flex items-center justify-center text-lg">
+                                💥
+                            </div>
+                        `;
+                        const entitiesLayer = document.getElementById('entities-layer');
+                        if (entitiesLayer) entitiesLayer.appendChild(burstEl);
+                        scheduleGameTimeout(() => {
+                            if (burstEl.parentNode) burstEl.remove();
+                        }, 380);
+
+                        showFloatingText(bomb.x, (curRow / ROWS) * 100, `💥 分裂 -${bomb.damage}`, 'text-fuchsia-300');
+                        damagePlantAt(curRow, curCol, bomb.damage);
+
+                        if (bomb.el) bomb.el.remove();
+                        gameState.enemyProjectiles.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+        function updateZombies(dt) {
+            const cellWidthPct = 100 / COLS;
+
+            for (let i = gameState.zombies.length - 1; i >= 0; i--) {
+                const z = gameState.zombies[i];
+                if (!z) continue;
+
+                let currentSpeed = z.speed;
+                if (z.chillTimer > 0) {
+                    z.chillTimer = Math.max(0, z.chillTimer - dt);
+                    currentSpeed = z.speed * (z.type === 'wheelchair' ? 0.65 : 0.45);
+                    if (z.chillTimer === 0 && z.el) {
+                        const sprite = z.el.querySelector('.zombie-sprite');
+                        if (sprite) sprite.style.filter = '';
+                    }
+                }
+
+                if (z.isJumping) {
+                    continue;
+                }
+
+                const colIndex = Math.floor((z.x / 100) * COLS);
+                const targetPlant = (colIndex >= 0 && colIndex < COLS) ? gameState.grid[z.row][colIndex] : null;
+
+                if (targetPlant && targetPlant.type !== 'cherry') {
+                    // 撐竿跳殭屍飛越第一株植物
+                    if (z.type === 'polevaulter' && z.hasPole) {
+                        z.hasPole = false;
+                        z.isJumping = true;
+
+                        const sprite = z.el?.querySelector('.zombie-sprite');
+                        const aura = z.el?.querySelector('.zombie-aura');
+                        const poleProp = z.el?.querySelector('.pole-prop');
+                        if (sprite) sprite.classList.add('pole-vaulting');
+                        if (poleProp) poleProp.remove();
+                        if (aura) {
+                            aura.className = 'zombie-aura absolute inset-0 rounded-full bg-indigo-600/20';
+                        }
+
+                        showFloatingText(z.x, (z.row / ROWS) * 100, '🏃 撐竿飛躍!', 'text-cyan-300');
+
+                        const landX = Math.max(1.8, z.x - cellWidthPct * 1.15);
+                        z.x = landX;
+                        z.speed = z.postVaultSpeed;
+                        if (z.el) {
+                            z.el.style.transition = 'left 0.52s ease-out';
+                            z.el.style.left = `${z.x}%`;
+                        }
+
+                        scheduleGameTimeout(() => {
+                            if (z.el) {
+                                z.el.style.transition = '';
+                                const sp = z.el.querySelector('.zombie-sprite');
+                                if (sp) sp.classList.remove('pole-vaulting');
+                            }
+                            z.isJumping = false;
+                            if (gameState.isRunning && !z.isDead && z.x <= 1.5) {
+                                endGame();
+                            }
+                        }, 550);
+                        continue;
+                    }
+
+                    if (z.type === 'zombie') {
+                        // 香菇炸彈：接觸植物即自爆造成 90 點傷害，並向前方扇形區域發射 3 枚分裂炸彈（各 45 傷害）
+                        showFloatingText(z.x, (z.row / ROWS) * 100, `💥 BOOM! -${MUSHROOM_EXPLOSION_DAMAGE}`, 'text-rose-400');
+                        damagePlantAt(z.row, colIndex, MUSHROOM_EXPLOSION_DAMAGE);
+                        spawnMushroomClusterBombs(z.x, z.row, colIndex);
+
+                        z.isDead = true;
+                        if (z.el) z.el.remove();
+                        gameState.zombies.splice(i, 1);
+                        continue;
+                    } else if (z.type === 'wheelchair') {
+                        // 輪椅殭屍（坦克）：重裝碾壓 35 點傷害
+                        z.biteTimer += dt;
+                        const crushInterval = z.chillTimer > 0 ? 1.65 : 1.1;
+                        if (z.biteTimer >= crushInterval) {
+                            z.biteTimer = 0;
+                            const crushDmg = 35;
+                            showFloatingText(z.x, (z.row / ROWS) * 100 + 2, `⚙️ 碾壓 -${crushDmg}`, 'text-amber-300');
+
+                            const sprite = z.el?.querySelector('.zombie-sprite');
+                            if (sprite) {
+                                sprite.style.transform = 'translateX(-6px) scale(1.08)';
+                                scheduleGameTimeout(() => {
+                                    if (sprite) sprite.style.transform = 'translateX(0) scale(1)';
+                                }, 180);
+                            }
+
+                            damagePlantAt(z.row, colIndex, crushDmg);
+                        }
+                        continue;
+                    } else {
+                        // 一般小胖子殭屍 (22 傷害) 與已丟竿撐竿跳殭屍 (24 傷害)
+                        z.biteTimer += dt;
+                        const biteInterval = z.chillTimer > 0 ? 1.4 : 0.85;
+                        if (z.biteTimer >= biteInterval) {
+                            z.biteTimer = 0;
+                            const biteDmg = z.type === 'polevaulter' ? 24 : 22;
+                            showFloatingText(z.x, (z.row / ROWS) * 100 + 2, `🦷 -${biteDmg}`, 'text-purple-300');
+
+                            const sprite = z.el?.querySelector('.zombie-sprite');
+                            if (sprite) {
+                                sprite.style.transform = 'scale(1.12) rotate(-6deg)';
+                                scheduleGameTimeout(() => {
+                                    if (sprite) sprite.style.transform = 'scale(1) rotate(0deg)';
+                                }, 150);
+                            }
+
+                            damagePlantAt(z.row, colIndex, biteDmg);
+                        }
+                        continue;
+                    }
+                }
+
+                // 向左前進
+                z.x -= currentSpeed * dt;
+                if (z.el) z.el.style.left = `${z.x}%`;
+
+                // 突破左側防線 -> 遊戲結束
+                if (z.x <= 1.5) {
+                    endGame();
+                    return;
+                }
+            }
+        }
+
+        /**
+         * 依實體參考安全移除殭屍（香菇炸彈被擊殺/吞噬時也會觸發扇形分裂炸彈）
+         */
+        function destroyZombieByRef(zombie) {
+            if (!zombie || zombie.isDead) return;
+            zombie.isDead = true;
+
+            const idx = gameState.zombies.indexOf(zombie);
+            if (idx !== -1) {
+                gameState.zombies.splice(idx, 1);
+            }
+
+            if (zombie.type === 'zombie') {
+                spawnMushroomClusterBombs(zombie.x, zombie.row, null);
+            }
+
+            let reward = 10;
+            let label = '✨ 擊破!';
+            let color = 'text-emerald-300';
+
+            if (zombie.type === 'wheelchair') {
+                reward = 25;
+                label = '🛡️ 擊破坦克! +25';
+                color = 'text-amber-300';
+            } else if (zombie.type === 'polevaulter') {
+                reward = 15;
+                label = '🏃‍♂️ 擊破選手! +15';
+                color = 'text-cyan-300';
+            }
+
+            showFloatingText(zombie.x, (zombie.row / ROWS) * 100 + 2, label, color);
+            if (zombie.el) zombie.el.remove();
+            gameState.score += reward;
+            updateHUD();
+        }
+
+        /**
+         * ==========================================
+         * 6. UI 狀態更新與全螢幕/關卡流程控制
+         * ==========================================
+         */
+        function updateHUD() {
+            const stage = getCurrentStageConfig();
+            const stageLabelEl = document.getElementById('stage-hud-label');
+            const sunEl = document.getElementById('sun-count');
+            const waveEl = document.getElementById('wave-display');
+            const totalWavesEl = document.getElementById('total-waves-display');
+            const scoreEl = document.getElementById('score-display');
+            const progressEl = document.getElementById('wave-progress');
+
+            if (stageLabelEl) stageLabelEl.textContent = `第${stage.id}關•${stage.difficulty}`;
+            if (sunEl) sunEl.textContent = gameState.sun;
+            if (waveEl) waveEl.textContent = gameState.wave;
+            if (totalWavesEl) totalWavesEl.textContent = gameState.totalWaves;
+            if (scoreEl) scoreEl.textContent = gameState.score;
+
+            if (progressEl) {
+                const pct = Math.min(100, (gameState.zombiesSpawnedInWave / gameState.zombiesPerWave) * 100);
+                progressEl.style.width = `${pct}%`;
+            }
+        }
+
+        function updateSeedCardsUI() {
+            for (const type of ['sunflower', 'shooter', 'wallnut', 'chomper', 'cherry']) {
+                const card = document.getElementById(`card-${type}`);
+                const cdOverlay = document.getElementById(`cd-${type}`);
+                if (!card || !cdOverlay) continue;
+
+                const cost = PLANT_STATS[type].cost;
+                const cd = gameState.cooldowns[type];
+
+                card.classList.toggle('selected', gameState.selectedSeed === type);
+
+                if (cd > 0) {
+                    card.classList.add('disabled');
+                    cdOverlay.classList.remove('hidden');
+                    cdOverlay.textContent = `${(cd / 1000).toFixed(1)}s`;
+                } else if (gameState.sun < cost) {
+                    card.classList.add('disabled');
+                    cdOverlay.classList.add('hidden');
+                } else {
+                    card.classList.remove('disabled');
+                    cdOverlay.classList.add('hidden');
+                }
+            }
+
+            const shovelCard = document.getElementById('card-shovel');
+            if (shovelCard) {
+                shovelCard.classList.toggle('selected', gameState.selectedSeed === 'shovel');
+            }
+        }
+
+        function showBanner(msg) {
+            const banner = document.getElementById('status-banner');
+            if (banner) banner.textContent = msg;
+        }
+
+        function toggleFullScreen() {
+            const docEl = document.documentElement;
+            if (!document.fullscreenElement) {
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen().then(() => {
+                        if (screen.orientation && screen.orientation.lock) {
+                            screen.orientation.lock('landscape').catch(() => {});
+                        }
+                    }).catch(() => {});
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                }
+            }
+        }
+
+        function startGame(stageId = null) {
+            if (typeof stageId === 'number') {
+                gameState.currentStageId = stageId;
+            }
+            stopAllTimers();
+            const overlay = document.getElementById('game-overlay');
+            if (overlay) overlay.classList.add('hidden');
+
+            resetGameState();
+            gameState.isRunning = true;
+            gameState.lastFrameTime = performance.now();
+
+            const stage = getCurrentStageConfig();
+            gameState.spawnTimeoutId = scheduleGameTimeout(() => {
+                gameState.spawnTimeoutId = null;
+                if (gameState.isRunning && gameState.zombiesSpawnedInWave < gameState.zombiesPerWave) {
+                    const openingType = stage.id === 5 ? null : 'chubby';
+                    spawnZombieEnemy(openingType);
+                    gameState.zombiesSpawnedInWave++;
+                    updateHUD();
+                }
+            }, 2500);
+
+            gameState.loopId = requestAnimationFrame(gameLoop);
+        }
+
+        function resetGameState() {
+            const stage = getCurrentStageConfig();
+            const entitiesLayer = document.getElementById('entities-layer');
+            const sunLayer = document.getElementById('sun-layer');
+            if (entitiesLayer) entitiesLayer.innerHTML = '';
+            if (sunLayer) sunLayer.innerHTML = '';
+            initGridUI();
+
+            gameState.sun = stage.initialSun;
+            gameState.score = 0;
+            gameState.wave = 1;
+            gameState.totalWaves = stage.waves.length;
+            gameState.zombiesSpawnedInWave = 0;
+            gameState.zombiesPerWave = stage.waves[0];
+            gameState.selectedSeed = null;
+            gameState.cooldowns = { sunflower: 0, shooter: 0, wallnut: 0, chomper: 0, cherry: 0 };
+            gameState.zombies = [];
+            gameState.projectiles = [];
+            gameState.enemyProjectiles = [];
+            gameState.naturalSunTimer = 0;
+            gameState.spawnTimer = 0;
+
+            updateHUD();
+            updateSeedCardsUI();
+            showBanner(`🚩 218家族 第 ${stage.id} 關「${stage.name}」(${stage.difficulty}) 開戰！善用堅果抵擋進攻與香菇分裂彈！`);
+        }
+
+        function resetGame() {
+            gameState.isRunning = false;
+            stopAllTimers();
+            startGame(gameState.currentStageId);
+        }
+
+        function winStage() {
+            gameState.isRunning = false;
+            stopAllTimers();
+
+            const clearedStage = getCurrentStageConfig();
+            saveClearedStage(clearedStage.id);
+
+            const hasNextStage = clearedStage.id < STAGE_CONFIGS.length;
+            const nextStageId = hasNextStage ? clearedStage.id + 1 : 1;
+            if (hasNextStage) {
+                gameState.currentStageId = nextStageId;
+            }
+
+            renderStageCards();
+
+            const overlay = document.getElementById('game-overlay');
+            const titleEl = document.getElementById('overlay-title');
+            const descEl = document.getElementById('overlay-desc');
+            const startBtn = document.getElementById('overlay-start-btn');
+            const secondaryBtn = document.getElementById('overlay-secondary-btn');
+
+            if (hasNextStage) {
+                const nextStage = getCurrentStageConfig();
+                if (titleEl) titleEl.textContent = `🏆 218家族 第 ${clearedStage.id} 關「${clearedStage.name}」通關！`;
+                if (descEl) descEl.textContent = `太棒了！218家族在「${clearedStage.difficulty}」難度獲得了 ${gameState.score} 分！已自動選中第 ${nextStage.id} 關「${nextStage.name}」(${nextStage.difficulty})！`;
+                if (startBtn) {
+                    startBtn.textContent = `➡️ 挑戰第 ${nextStage.id} 關：${nextStage.name}（${nextStage.difficulty}）`;
+                    startBtn.onclick = () => startGame(nextStage.id);
+                }
+            } else {
+                if (titleEl) titleEl.textContent = '👑 218家族全制霸！5 大難度關卡全數通關！';
+                if (descEl) descEl.textContent = `你成功帶領 218家族征服了地獄難度「${clearedStage.name}」，本關總計獲得 ${gameState.score} 分！`;
+                if (startBtn) {
+                    startBtn.textContent = '🚀 啟動所選關卡挑戰';
+                    startBtn.onclick = () => startGame();
+                }
+            }
+
+            if (secondaryBtn) {
+                secondaryBtn.textContent = `🔁 重玩第 ${clearedStage.id} 關`;
+                secondaryBtn.onclick = () => startGame(clearedStage.id);
+                secondaryBtn.classList.remove('hidden');
+            }
+
+            if (overlay) overlay.classList.remove('hidden');
+        }
+
+        function endGame() {
+            gameState.isRunning = false;
+            stopAllTimers();
+
+            const failedStage = getCurrentStageConfig();
+            renderStageCards();
+
+            const overlay = document.getElementById('game-overlay');
+            const titleEl = document.getElementById('overlay-title');
+            const descEl = document.getElementById('overlay-desc');
+            const startBtn = document.getElementById('overlay-start-btn');
+            const secondaryBtn = document.getElementById('overlay-secondary-btn');
+
+            if (titleEl) titleEl.textContent = `💥 218家族 第 ${failedStage.id} 關防線被突破了！`;
+            if (descEl) descEl.textContent = `218家族在「${failedStage.name}」(${failedStage.difficulty}) 撐到了第 ${gameState.wave}/${gameState.totalWaves} 波，獲得 ${gameState.score} 分！`;
+            if (startBtn) {
+                startBtn.textContent = `🔁 重新挑戰第 ${failedStage.id} 關（${failedStage.difficulty}）`;
+                startBtn.onclick = () => startGame();
+            }
+            if (secondaryBtn) {
+                secondaryBtn.classList.add('hidden');
+            }
+            if (overlay) overlay.classList.remove('hidden');
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && gameState.isRunning) {
+                gameState.lastFrameTime = performance.now();
+            }
+        });
+
+        window.onload = () => {
+            loadClearedStages();
+            renderStageCards();
+            initGridUI();
+            updateHUD();
+            Object.keys(CHARACTER_CONFIG).forEach((roleKey) => {
+                resolveImgbbDirectUrl(roleKey);
+            });
+        };
+    </script>
+</body>
+</html>
