@@ -258,9 +258,50 @@
             transform: translateY(-100%);
             pointer-events: none;
         }
+    
+        /* 統一等比例自適應舞台：所有裝置呈現完全一致的比例與版面，不硬拉滿版 */
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #0a1410;
+        }
+        #device-viewport-wrapper {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #142820 0%, #070e0b 100%);
+        }
+        #uniform-game-stage {
+            position: relative;
+            width: 1280px;
+            height: 720px;
+            flex-shrink: 0;
+            transform-origin: center center;
+            background: radial-gradient(circle at top, #1e3a2f 0%, #0f1f19 100%);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+            overflow: hidden;
+        }
+        /* 將原本 fixed 彈窗與載入遮罩鎖定在統一舞台內等比例縮放 */
+        #uniform-game-stage .fixed {
+            position: absolute !important;
+        }
+        #uniform-game-stage.h-screen {
+            height: 720px !important;
+        }
+        #uniform-game-stage.w-screen {
+            width: 1280px !important;
+        }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col justify-between p-1 sm:p-2 text-white">
+<body>
+<div id="device-viewport-wrapper">
+<div id="uniform-game-stage" class="h-screen w-screen overflow-hidden flex flex-col justify-between p-1 sm:p-2 text-white">
 
     <!-- 一進入網站的創意「陽光草皮能量載入跑條」 -->
     <div id="boot-loader" class="fixed inset-0 z-[80] flex flex-col items-center justify-center p-6 bg-gradient-to-b from-emerald-950 via-[#0f291e] to-amber-950 select-none">
@@ -654,6 +695,9 @@
             </button>
         </div>
     </div>
+
+</div>
+</div>
 
     <script>
         /**
@@ -3804,6 +3848,22 @@
                 }
             }
         });
+
+        
+        // 統一等比例視窗縮放自適應（基準 1280x720，所有裝置比例完全一致，不硬拉滿版）
+        function applyUniformStageScale() {
+            const stage = document.getElementById('uniform-game-stage');
+            if (!stage) return;
+            const baseW = 1280;
+            const baseH = 720;
+            const vw = window.innerWidth || document.documentElement.clientWidth;
+            const vh = window.innerHeight || document.documentElement.clientHeight;
+            const scale = Math.min(vw / baseW, vh / baseH);
+            stage.style.transform = `scale(${scale})`;
+        }
+        applyUniformStageScale();
+        window.addEventListener('resize', applyUniformStageScale);
+        window.addEventListener('orientationchange', applyUniformStageScale);
 
         window.onload = () => {
             loadClearedStages();
