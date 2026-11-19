@@ -732,7 +732,7 @@
                     </div>
                     <p class="text-xs text-slate-300 mb-3">輸入官方活動序號可解鎖隱藏福利權限：</p>
                     <p id="redeem-status-desc" class="hidden text-xs text-amber-300 bg-amber-950/70 border border-amber-500/40 rounded-xl p-2 mb-3"></p>
-                    <input id="redeem-input" type="text" placeholder="請在此輸入兌換碼..." oninput="handleRedeemLiveInput(this.value)" onkeydown="if(event.key==='Enter') submitRedeemCode()" class="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-400 focus:outline-none rounded-xl px-3.5 py-2 text-sm text-white mb-4">
+                    <input id="redeem-input" type="text" placeholder="請在此輸入兌換碼..." onkeydown="if(event.key==='Enter') submitRedeemCode()" class="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-400 focus:outline-none rounded-xl px-3.5 py-2 text-sm text-white mb-4">
                     <div class="flex items-center justify-between gap-2">
                         <button type="button" id="redeem-rollback-btn" onclick="rollbackCheatMode()" class="hidden px-3 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-white text-xs font-black cursor-pointer">
                             🔄 回溯恢復正常模式
@@ -749,25 +749,29 @@
                 </div>
             </div>
 
-            <!-- 彩蛋致命錯誤當機遮罩（輸入「李承祐好醜」觸發） -->
-            <div id="bsod-crash-screen" style="z-index: 9999;" class="absolute inset-0 bg-[#0037da] hidden flex-col justify-center p-10 text-white font-mono select-none overflow-y-auto">
+            <!-- 彩蛋致命錯誤當機遮罩（輸入「李承祐好醜」觸發假當機，輸入「李承祐是大帥哥」即可原地解除） -->
+            <div id="bsod-crash-screen" class="absolute inset-0 bg-[#0037da] z-[999] hidden flex-col justify-center p-8 sm:p-12 text-white font-mono select-none">
                 <div class="max-w-3xl mx-auto w-full">
-                    <div class="text-8xl font-black mb-6">:(</div>
-                    <h2 class="text-3xl font-black mb-4 leading-snug">
-                        偵測到嚴重違規言論：系統核心已拒絕執行並強制崩潰！
+                    <div class="text-7xl sm:text-8xl font-black mb-4">:(</div>
+                    <h2 class="text-2xl sm:text-3xl font-black mb-3 leading-snug">
+                        偵測到嚴重違規言論：系統核心已假裝崩潰並鎖定！
                     </h2>
-                    <p class="text-lg text-blue-100 mb-6 leading-relaxed">
-                        錯誤代碼：<span class="bg-white text-[#0037da] font-black px-2 py-0.5 rounded">ERR_CREATOR_SLANDER_FATAL_CRASH (0x00000218)</span><br>
-                        原因分析：在製作人「李承祐」親手打造的 218 家族世界裡，竟然敢輸入「李承祐好醜」，觸發了宇宙級防禦自毀協議。
+                    <p class="text-base sm:text-lg text-blue-100 mb-5 leading-relaxed">
+                        錯誤代碼：<span class="bg-white text-[#0037da] font-black px-2 py-0.5 rounded">ERR_CREATOR_SLANDER_LOCK (0x00000218)</span><br>
+                        原因分析：在製作人「李承祐」親手打造的 218 家族世界裡，竟然敢輸入「李承祐好醜」，系統已啟動趣味假當機防護。
                     </p>
-                    <div class="bg-blue-950/70 border-2 border-blue-300/60 rounded-2xl p-4 text-sm text-blue-200 space-y-1 mb-6">
+                    <div class="bg-blue-950/75 border-2 border-blue-300/60 rounded-2xl p-4 text-xs sm:text-sm text-blue-200 space-y-1 mb-5">
                         <div>*** STOP: 0x218_LEE_CHENG_YU_IS_HANDSOME (0xFFFFF800, 0x00000000)</div>
-                        <div>*** 記憶體傾印完成：遊戲主迴圈已永久凍結，所有陽光與防線已化為烏有。</div>
-                        <div>*** 解決方案：請重新整理網頁，並誠心懺悔或改輸入正確讚美序號！</div>
+                        <div>*** 狀態說明：網頁並未真正壞掉，戰局進度已完整凍結保存中。</div>
+                        <div>*** 解除方案：請在下方輸入通關密語「<span class="text-yellow-300 font-black">李承祐是大帥哥</span>」即可立即解除並回到遊戲！</div>
                     </div>
-                    <button type="button" onclick="location.reload()" class="bg-white hover:bg-blue-100 text-[#0037da] font-black px-6 py-3 rounded-xl text-base shadow-xl cursor-pointer transition">
-                        🔄 重新整理網頁以重啟系統
-                    </button>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-xl">
+                        <input id="bsod-unlock-input" type="text" placeholder="請輸入：李承祐是大帥哥" onkeydown="if(event.key==='Enter') unlockCreatorCrashEasterEgg()" class="flex-1 bg-blue-950/90 border-2 border-blue-200 focus:border-yellow-300 focus:outline-none rounded-xl px-4 py-3 text-base font-sans text-white placeholder-blue-300/70">
+                        <button type="button" onclick="unlockCreatorCrashEasterEgg()" class="bg-yellow-300 hover:bg-yellow-200 text-[#0037da] font-sans font-black px-6 py-3 rounded-xl text-base shadow-xl cursor-pointer transition shrink-0">
+                            🔓 確認解鎖並返回遊戲
+                        </button>
+                    </div>
+                    <p id="bsod-unlock-hint" class="text-sm font-sans font-black text-yellow-300 mt-3 min-h-[20px]"></p>
                 </div>
             </div>
 
@@ -2379,6 +2383,400 @@
             }
         }
 
+        function getCurrentStageConfig() {
+            return STAGE_CONFIGS.find((s) => s.id === gameState.currentStageId) || STAGE_CONFIGS[0];
+        }
+
+        function getStageInitialSun(stage) {
+            const base = stage ? stage.initialSun : 200;
+            return gameState.gameMode === 'fusion' ? base + 125 : base;
+        }
+
+        let modalPauseDepth = 0;
+
+        function pauseGameForModal() {
+            if (!gameState.isRunning) return;
+            modalPauseDepth += 1;
+            if (!gameState.isPaused) {
+                gameState.isPaused = true;
+                if (gameState.loopId !== null) {
+                    cancelAnimationFrame(gameState.loopId);
+                    gameState.loopId = null;
+                }
+            }
+        }
+
+        function resumeGameFromModal() {
+            if (modalPauseDepth > 0) {
+                modalPauseDepth -= 1;
+            }
+            if (modalPauseDepth === 0 && gameState.isRunning && gameState.isPaused) {
+                const bsod = document.getElementById('bsod-crash-screen');
+                if (bsod && !bsod.classList.contains('hidden')) return;
+                gameState.isPaused = false;
+                gameState.lastFrameTime = 0;
+                gameState.loopId = requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function initGridUI() {
+            const gridLayer = document.getElementById('grid-layer');
+            gameState.grid = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+            if (!gridLayer) return;
+
+            gridLayer.innerHTML = '';
+            let lastTouchTime = 0;
+
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const cell = document.createElement('div');
+                    const isEven = (r + c) % 2 === 0;
+                    cell.className = `lawn-cell ${isEven ? 'lawn-cell-even' : 'lawn-cell-odd'} border border-emerald-950/25 cursor-pointer transition-colors`;
+                    cell.dataset.row = String(r);
+                    cell.dataset.col = String(c);
+
+                    cell.addEventListener('touchend', (e) => {
+                        if (e && e.cancelable) e.preventDefault();
+                        lastTouchTime = performance.now();
+                        handleCellClick(r, c);
+                    }, { passive: false });
+
+                    cell.addEventListener('click', () => {
+                        if (performance.now() - lastTouchTime < 350) return;
+                        handleCellClick(r, c);
+                    });
+
+                    gridLayer.appendChild(cell);
+                }
+            }
+        }
+
+        function renderStageCards() {
+            const container = document.getElementById('stage-cards-container');
+            const badge = document.getElementById('cleared-count-badge');
+            if (badge) {
+                badge.textContent = `已通關：${gameState.clearedStages.length} / ${STAGE_CONFIGS.length} 關`;
+            }
+            if (!container) return;
+
+            container.innerHTML = STAGE_CONFIGS.map((st) => {
+                const isSelected = st.id === gameState.currentStageId;
+                const isCleared = gameState.clearedStages.includes(st.id);
+                const initSun = getStageInitialSun(st);
+                const isStage5EndlessUnlocked = st.id === 5 && isCleared;
+
+                return `
+                    <div onclick="selectStageCard(${st.id})"
+                         class="relative rounded-2xl p-2.5 border-2 transition cursor-pointer flex flex-col justify-between ${
+                             isSelected
+                                 ? 'bg-gradient-to-b from-yellow-200 to-amber-300 border-amber-900 shadow-lg scale-[1.02]'
+                                 : 'bg-white/80 hover:bg-white border-amber-700/40'
+                         }">
+                        <div>
+                            <div class="flex items-center justify-between gap-1 mb-1">
+                                <span class="text-[11px] font-black px-2 py-0.5 rounded-full ${st.badgeClass}">第${st.id}關•${st.difficulty}</span>
+                                <span class="text-xs font-black ${isCleared ? 'text-emerald-700' : 'text-amber-700'}">
+                                    ${isCleared ? '👑 已通關' : st.stars}
+                                </span>
+                            </div>
+                            <div class="text-sm font-black text-amber-950 leading-tight mb-1">${st.name}</div>
+                            <p class="text-[10px] text-amber-900/90 leading-snug line-clamp-2">${st.description}</p>
+                        </div>
+                        <div class="mt-1.5 pt-1 border-t border-amber-800/20 flex items-center justify-between text-[10px] font-black text-amber-950">
+                            <span>☀️ ${initSun}</span>
+                            <span>🌊 ${st.waves.length}波</span>
+                            ${isStage5EndlessUnlocked ? `<span class="text-rose-700">♾️ 最高${gameState.endlessBestWave}波</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectStageCard(stageId) {
+            const wasSame = gameState.currentStageId === stageId;
+            gameState.currentStageId = stageId;
+            const stage = getCurrentStageConfig();
+            const isStage5Cleared = stageId === 5 && gameState.clearedStages.includes(5);
+            gameState.isEndlessMode = Boolean(isStage5Cleared && wasSame);
+
+            renderStageCards();
+            const startBtn = document.getElementById('overlay-start-btn');
+            if (startBtn) {
+                if (isStage5Cleared) {
+                    startBtn.textContent = gameState.isEndlessMode
+                        ? `♾️ 啟動第 5 關「無盡生存模式」（最高第 ${gameState.endlessBestWave} 波）！`
+                        : `🚀 開始第 5 關（已通關 • 再點一次切換無盡模式）！`;
+                    startBtn.onclick = () => startGame(5, gameState.isEndlessMode);
+                } else {
+                    startBtn.textContent = `🚀 開始第 ${stage.id} 關（${stage.difficulty}）！`;
+                    startBtn.onclick = () => startGame(stage.id, false);
+                }
+            }
+            soundEngine.play('plant');
+        }
+
+        function openStageSelectModal() {
+            gameState.isRunning = false;
+            gameState.isPaused = false;
+            modalPauseDepth = 0;
+            stopAllTimers();
+
+            const stage = getCurrentStageConfig();
+            const overlay = document.getElementById('game-overlay');
+            const titleEl = document.getElementById('overlay-title');
+            const startBtn = document.getElementById('overlay-start-btn');
+            const secondaryBtn = document.getElementById('overlay-secondary-btn');
+
+            if (titleEl) titleEl.textContent = '🌻 218家族—植物大戰殭屍 🎃';
+            renderStageCards();
+            if (startBtn) {
+                startBtn.textContent = `🚀 開始第 ${stage.id} 關（${stage.difficulty}）！`;
+                startBtn.onclick = () => startGame(stage.id, false);
+            }
+            if (secondaryBtn) secondaryBtn.classList.add('hidden');
+            if (overlay) overlay.classList.remove('hidden');
+        }
+
+        function renderAlmanacList() {
+            const gridEl = document.getElementById('almanac-grid');
+            const plantMatrixEl = document.getElementById('plant-genotype-matrix');
+            const zombieMatrixEl = document.getElementById('zombie-genotype-matrix');
+
+            if (gridEl) {
+                gridEl.innerHTML = ALL_CHAR_KEYS.map((key) => {
+                    const cfg = CHARACTER_CONFIG[key];
+                    return `
+                        <div class="flex items-start gap-3 bg-white/85 border-2 border-amber-700/40 rounded-2xl p-2.5 shadow-sm">
+                            <img src="${cfg.activeUrl}" alt="${cfg.name}" onerror="handleImgFallback(this, '${key}')" class="w-14 h-14 object-contain rounded-xl bg-amber-50 border border-amber-300 p-1 shrink-0">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="text-sm font-black text-amber-950">${cfg.name}</span>
+                                    <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-900 text-yellow-200 shrink-0">${cfg.roleLabel}</span>
+                                </div>
+                                <div class="text-[11px] font-extrabold text-emerald-800 mt-0.5">${cfg.statsText}</div>
+                                <p class="text-[11px] text-amber-900/90 mt-1 leading-snug">${cfg.detailDesc}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (plantMatrixEl) {
+                const headers = PLANT_ORDER.map((k) => `<th class="p-1.5 border border-emerald-800/30 bg-emerald-900 text-amber-200 text-[11px] font-black">${CHARACTER_CONFIG[k].name}</th>`).join('');
+                const rowsHtml = PLANT_ORDER.map((rKey) => {
+                    const cells = PLANT_ORDER.map((cKey) => {
+                        if (rKey === cKey) {
+                            return `<td class="p-1.5 border border-emerald-800/30 bg-amber-200/90 text-amber-950 text-[10px] font-black text-center">AA 純合疊2株<br><span class="text-[9px] font-bold text-amber-800">雙倍強化</span></td>`;
+                        }
+                        const rec = findPlantFusionRecipe(rKey, cKey);
+                        if (rec) {
+                            return `<td class="p-1.5 border border-emerald-800/30 bg-gradient-to-br from-yellow-100 to-orange-100 text-red-950 text-[10px] font-black text-center" title="${rec.desc}">${rec.name}<br><span class="text-[9px] font-bold text-amber-800">${rec.badge}</span></td>`;
+                        }
+                        return `<td class="p-1.5 border border-emerald-800/30 bg-slate-200/70 text-slate-500 text-[10px] text-center">aa 不相容</td>`;
+                    }).join('');
+                    return `<tr><th class="p-1.5 border border-emerald-800/30 bg-emerald-900 text-amber-200 text-[11px] font-black whitespace-nowrap">${CHARACTER_CONFIG[rKey].name}</th>${cells}</tr>`;
+                }).join('');
+                plantMatrixEl.innerHTML = `<table class="w-full border-collapse"><thead><tr><th class="p-1.5 border border-emerald-800/30 bg-emerald-950 text-yellow-300 text-[10px]">🌱 交叉表</th>${headers}</tr></thead><tbody>${rowsHtml}</tbody></table>`;
+            }
+
+            if (zombieMatrixEl) {
+                const zKeys = ['normal', 'polevault', 'wizard', 'mushroom', 'wheelchair'];
+                const zHeaders = zKeys.map((k) => `<th class="p-1.5 border border-purple-800/30 bg-purple-900 text-fuchsia-200 text-[11px] font-black">${CHARACTER_CONFIG[k].name}</th>`).join('');
+                const zRows = zKeys.map((rKey) => {
+                    const cells = zKeys.map((cKey) => {
+                        const rec = findZombieFusionRecipe(rKey, cKey);
+                        if (rec) {
+                            return `<td class="p-1.5 border border-purple-800/30 bg-fuchsia-100/90 text-purple-950 text-[10px] font-black text-center" title="${rec.trait}">${rec.name}<br><span class="text-[9px] font-bold text-fuchsia-800">${rec.badge}</span></td>`;
+                        }
+                        return `<td class="p-1.5 border border-purple-800/30 bg-slate-200/70 text-slate-500 text-[10px] text-center">—</td>`;
+                    }).join('');
+                    return `<tr><th class="p-1.5 border border-purple-800/30 bg-purple-900 text-fuchsia-200 text-[11px] font-black whitespace-nowrap">${CHARACTER_CONFIG[rKey].name}</th>${cells}</tr>`;
+                }).join('');
+                zombieMatrixEl.innerHTML = `<table class="w-full border-collapse"><thead><tr><th class="p-1.5 border border-purple-800/30 bg-purple-950 text-fuchsia-300 text-[10px]">🧟 合體表</th>${zHeaders}</tr></thead><tbody>${zRows}</tbody></table>`;
+            }
+        }
+
+        const CAST_CREDITS = [
+            { key: 'sunflower', actor: '羅子芸', role: '向日葵' },
+            { key: 'peashooter', actor: '張芷瑜', role: '奶油射手' },
+            { key: 'firepea', actor: '林婕妤', role: '燃燒射手' },
+            { key: 'wallnut', actor: '許宇希', role: '堅果' },
+            { key: 'chomper', actor: '馮秉凡', role: '食人花' },
+            { key: 'squash', actor: '吳穎洲', role: '倭瓜' },
+            { key: 'cherry', actor: '鄭羽真', role: '櫻桃炸彈' },
+            { key: 'mushroom', actor: '李承祐', role: '香菇炸彈' },
+            { key: 'normal', actor: '陳子寧', role: '小胖殭屍' },
+            { key: 'polevault', actor: '蔡沛潔', role: '撐竿跳殭屍' },
+            { key: 'wizard', actor: '徐坪御', role: '法師殭屍' },
+            { key: 'wheelchair', actor: '鐘家怡', role: '輪椅殭屍' }
+        ];
+
+        function spawnCelebrationConfetti() {
+            const stage = document.getElementById('game-stage');
+            if (!stage) return;
+            const emojis = ['🎉', '🎊', '✨', '🌻', '👑', '💥', '🌟'];
+            for (let i = 0; i < 36; i++) {
+                const item = document.createElement('div');
+                item.className = 'celebration-confetti text-2xl';
+                item.textContent = emojis[i % emojis.length];
+                item.style.left = `${Math.random() * 96}%`;
+                item.style.animationDuration = `${2.4 + Math.random() * 2.2}s`;
+                item.style.animationDelay = `${Math.random() * 0.8}s`;
+                stage.appendChild(item);
+                setTimeout(() => {
+                    if (item.parentNode) item.remove();
+                }, 5200);
+            }
+        }
+
+        function openCreditsModal(isVictory = false, finalScore = 0) {
+            const modal = document.getElementById('credits-modal');
+            const banner = document.getElementById('credits-victory-banner');
+            const scoreEl = document.getElementById('credits-victory-score');
+            const endlessBtn = document.getElementById('credits-endless-btn');
+            const grid = document.getElementById('credits-cast-grid');
+
+            if (banner) banner.classList.toggle('hidden', !isVictory);
+            if (scoreEl && isVictory) scoreEl.textContent = `🏆 最終通關榮耀總積分：${finalScore} 分！`;
+            if (endlessBtn) endlessBtn.classList.toggle('hidden', !isVictory);
+
+            if (grid) {
+                grid.innerHTML = CAST_CREDITS.map((c) => {
+                    const url = CHARACTER_CONFIG[c.key]?.activeUrl || DEFAULT_UNIT_IMAGES[c.key];
+                    return `
+                        <div class="flex items-center gap-2.5 bg-amber-950/75 border border-amber-500/50 rounded-2xl p-2 shadow">
+                            <img src="${url}" alt="${c.role}" onerror="handleImgFallback(this, '${c.key}')" class="w-11 h-11 object-contain rounded-xl bg-amber-100/90 p-0.5 shrink-0">
+                            <div class="min-w-0">
+                                <div class="text-[11px] font-bold text-amber-300 truncate">${c.role}</div>
+                                <div class="text-sm font-black text-white truncate">${c.actor}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            if (isVictory) {
+                spawnCelebrationConfetti();
+            } else {
+                pauseGameForModal();
+            }
+        }
+
+        function closeCreditsModal() {
+            const modal = document.getElementById('credits-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+            resumeGameFromModal();
+        }
+
+        function renderImageConfigGrid() {
+            const grid = document.getElementById('image-config-grid');
+            if (!grid) return;
+            grid.innerHTML = ALL_CHAR_KEYS.map((key) => {
+                const cfg = CHARACTER_CONFIG[key];
+                return `
+                    <div class="flex items-center gap-2.5 bg-slate-800/90 border border-slate-700 rounded-2xl p-2.5">
+                        <img id="cfg-thumb-${key}" src="${cfg.activeUrl}" alt="${cfg.name}" onerror="handleImgFallback(this, '${key}')" class="w-12 h-12 object-contain rounded-xl bg-white p-0.5 shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <div class="text-xs font-black text-emerald-300 mb-1">${cfg.name}</div>
+                            <input type="text" value="${cfg.activeUrl}" onchange="updateCharacterImageUrl('${key}', this.value)" placeholder="貼上圖片直鏈..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white mb-1">
+                            <label class="inline-block bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded cursor-pointer">
+                                📁 上傳本機照片
+                                <input type="file" accept="image/*" onchange="handleLocalImageUpload('${key}', this.files[0])" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function syncCharacterImageElements(roleKey, newUrl) {
+            CHARACTER_CONFIG[roleKey].activeUrl = newUrl;
+            const previewEl = document.getElementById(`preview-${roleKey}`);
+            if (previewEl) previewEl.src = newUrl;
+            const modalEl = document.getElementById(`modal-img-${roleKey}`);
+            if (modalEl) modalEl.src = newUrl;
+            const thumbEl = document.getElementById(`cfg-thumb-${roleKey}`);
+            if (thumbEl) thumbEl.src = newUrl;
+            document.querySelectorAll(`img[data-role="${roleKey}"]`).forEach((img) => {
+                img.dataset.fallbackApplied = '0';
+                img.src = newUrl;
+            });
+        }
+
+        function updateCharacterImageUrl(roleKey, rawUrl) {
+            const url = (rawUrl || '').trim();
+            if (!url) return;
+            syncCharacterImageElements(roleKey, url);
+            saveCustomImageToStorage(roleKey, url);
+        }
+
+        function handleLocalImageUpload(roleKey, file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    const maxDim = 220;
+                    const ratio = Math.min(1, maxDim / Math.max(img.width, img.height));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.max(1, Math.round(img.width * ratio));
+                    canvas.height = Math.max(1, Math.round(img.height * ratio));
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        const compressed = canvas.toDataURL('image/png', 0.88);
+                        syncCharacterImageElements(roleKey, compressed);
+                        saveCustomImageToStorage(roleKey, compressed);
+                    }
+                };
+                img.src = ev.target?.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetAllCustomImages() {
+            window.safeStorage.remove(STORAGE_KEY_CUSTOM_IMAGES);
+            ALL_CHAR_KEYS.forEach((key) => {
+                syncCharacterImageElements(key, DEFAULT_UNIT_IMAGES[key]);
+            });
+            renderImageConfigGrid();
+            showBanner('🔄 已恢復全部 12 位角色預設直鏈圖片！');
+        }
+
+        function preloadAllCharacterAssets() {
+            const loader = document.getElementById('boot-loader');
+            const fill = document.getElementById('boot-progress-fill');
+            const rider = document.getElementById('boot-sun-rider');
+            const pctText = document.getElementById('boot-percent-text');
+            const statusText = document.getElementById('boot-status-text');
+
+            renderImageConfigGrid();
+            let progress = 0;
+            const timer = setInterval(() => {
+                progress = Math.min(100, progress + 25);
+                if (fill) fill.style.width = `${progress}%`;
+                if (rider) rider.style.left = `${progress}%`;
+                if (pctText) pctText.textContent = `${progress}%`;
+                const stageIdx = Math.min(5, Math.max(1, Math.ceil(progress / 20)));
+                const sprout = document.getElementById(`sprout-${stageIdx}`);
+                if (sprout) sprout.classList.remove('opacity-20', 'scale-50', 'translate-y-2');
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    if (statusText) statusText.textContent = '🌻 能量滿載！準備進入 218 家族草皮戰場！';
+                    setTimeout(() => {
+                        if (loader) loader.classList.add('boot-done');
+                    }, 180);
+                }
+            }, 90);
+        }
+
         function loadVipState() {
             try {
                 const enabled = window.safeStorage.get(STORAGE_KEY_VIP_MODE) === '1'
@@ -2555,35 +2953,44 @@
 
         function submitRedeemCode() {
             const input = document.getElementById('redeem-input');
-            const raw = (input ? input.value : '').trim();
-            const normalized = raw.replace(/\s+/g, '');
-            const lower = normalized.toLowerCase();
+            const raw = (input ? input.value : '').replace(/[\s\u3000\u200B-\u200D\uFEFF]/g, '');
+            const lower = raw.toLowerCase();
 
-            // 彩蛋懲罰：輸入「李承祐好醜」直接觸發全畫面藍屏崩潰並凍結遊戲引擎
-            if (isCreatorSlanderCode(normalized)) {
-                closeRedeemModal();
+            // 彩蛋懲罰：輸入「李承祐好醜」觸發全畫面趣味藍屏假當機（輸入「李承祐是大帥哥」可原地解除）
+            if (raw === '李承祐好醜') {
+                if (input) input.value = '';
+                const redeemModal = document.getElementById('redeem-modal');
+                if (redeemModal) {
+                    redeemModal.classList.add('hidden');
+                    redeemModal.classList.remove('flex');
+                }
                 triggerCreatorCrashEasterEgg();
                 return;
             }
 
+            // 讚美彩蛋：一般狀態輸入「李承祐是大帥哥」可獲得誠實讚美 +500 陽光
+            if (raw === '李承祐是大帥哥') {
+                if (!gameState.infiniteSun) {
+                    gameState.sun += 500;
+                }
+                soundEngine.play('goldsun');
+                updateHUD();
+                updateSeedCardsUI();
+                showBanner('😎 眼光真好！製作人李承祐感謝你的誠實讚美，額外贈送 +500 陽光！');
+                closeRedeemModal();
+                return;
+            }
+
             // 嚴格白名單：僅允許「vip666」與「李承祐好帥」
-            if (lower === 'vip666' || normalized === '李承祐好帥') {
+            if (lower === 'vip666' || raw === '李承祐好帥') {
                 if (!gameState.infiniteSun && gameState.preCheatSun === null) {
                     gameState.preCheatSun = gameState.sun;
-                    try {
-                        localStorage.setItem(STORAGE_KEY_PRE_CHEAT_SUN, String(gameState.sun));
-                    } catch (e) {
-                        // 忽略儲存限制
-                    }
+                    window.safeStorage.set(STORAGE_KEY_PRE_CHEAT_SUN, String(gameState.sun));
                 }
                 gameState.infiniteSun = true;
                 gameState.noCooldown = true;
                 clearAllPlantCooldowns();
-                try {
-                    localStorage.setItem(STORAGE_KEY_VIP_MODE, '1');
-                } catch (e) {
-                    // 忽略儲存限制
-                }
+                window.safeStorage.set(STORAGE_KEY_VIP_MODE, '1');
                 soundEngine.play('sun');
                 updateHUD();
                 updateSeedCardsUI();
@@ -2594,898 +3001,59 @@
             closeRedeemModal();
         }
 
-        function isCreatorSlanderCode(text) {
-            if (!text) return false;
-            const compact = String(text).replace(/\s+/g, '');
-            return compact.includes('李承祐好醜')
-                || compact.includes('李承祐好丑')
-                || compact.includes('李承佑好醜')
-                || compact.includes('李承佑好丑');
-        }
-
-        function handleRedeemLiveInput(val) {
-            if (isCreatorSlanderCode(val)) {
-                closeRedeemModal();
-                triggerCreatorCrashEasterEgg();
-            }
-        }
+        let wasRunningBeforeBsod = false;
 
         function triggerCreatorCrashEasterEgg() {
-            gameState.isRunning = false;
-            gameState.isPaused = true;
-            gameState.battleSessionId += 999;
-            stopAllTimers();
+            wasRunningBeforeBsod = Boolean(gameState.isRunning);
+            if (gameState.isRunning && !gameState.isPaused) {
+                gameState.isPaused = true;
+                if (gameState.loopId !== null) {
+                    cancelAnimationFrame(gameState.loopId);
+                    gameState.loopId = null;
+                }
+            }
             soundEngine.play('boom');
 
-            const stage = document.getElementById('game-stage');
-            if (stage) {
-                stage.style.filter = 'contrast(1.3) saturate(1.4)';
-            }
-
             const bsod = document.getElementById('bsod-crash-screen');
+            const unlockInput = document.getElementById('bsod-unlock-input');
+            const unlockHint = document.getElementById('bsod-unlock-hint');
+            if (unlockInput) unlockInput.value = '';
+            if (unlockHint) unlockHint.textContent = '';
             if (bsod) {
                 bsod.classList.remove('hidden');
                 bsod.classList.add('flex');
-                bsod.style.display = 'flex';
+                setTimeout(() => {
+                    if (unlockInput) unlockInput.focus();
+                }, 40);
             }
-
-            // 以安全警告紀錄替代未捕獲的 Error 拋出，保留完整藍屏特效且不觸發環境全域報錯
-            console.warn('FATAL_CRASH [0x218]: 偵測到「李承祐好醜」彩蛋指令，遊戲引擎已進入藍屏凍結狀態！');
         }
 
-        function getCurrentStageConfig() {
-            return STAGE_CONFIGS.find(s => s.id === gameState.currentStageId) || STAGE_CONFIGS[0];
-        }
+        function unlockCreatorCrashEasterEgg() {
+            const unlockInput = document.getElementById('bsod-unlock-input');
+            const unlockHint = document.getElementById('bsod-unlock-hint');
+            const cleaned = (unlockInput ? unlockInput.value : '').replace(/[\s\u3000\u200B-\u200D\uFEFF]/g, '');
 
-        function getStageInitialSun(stage) {
-            if (!stage) return 200;
-            return gameState.gameMode === 'fusion' ? stage.initialSun + 125 : stage.initialSun;
-        }
-
-        /**
-         * 渲染選關彈窗中的 5 張關卡難度卡片
-         */
-        function renderStageCards() {
-            const container = document.getElementById('stage-cards-container');
-            const badgeEl = document.getElementById('cleared-count-badge');
-            if (!container) return;
-
-            if (badgeEl) {
-                const bestTag = gameState.endlessBestWave > 0 ? ` • 無盡紀錄：第${gameState.endlessBestWave}波` : '';
-                badgeEl.textContent = `已通關：${gameState.clearedStages.length} / ${STAGE_CONFIGS.length} 關${bestTag}`;
-            }
-
-            container.innerHTML = '';
-            STAGE_CONFIGS.forEach((stage) => {
-                const isSelected = stage.id === gameState.currentStageId;
-                const isCleared = gameState.clearedStages.includes(stage.id);
-                const canEndless = stage.id === 5 && isCleared;
-
-                const card = document.createElement('button');
-                card.type = 'button';
-                card.onclick = () => selectStage(stage.id);
-                card.className = `relative text-left p-2.5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
-                    isSelected
-                        ? 'bg-amber-50 border-amber-600 ring-4 ring-yellow-400/80 shadow-lg scale-[1.02]'
-                        : 'bg-white/80 hover:bg-white border-amber-800/30 opacity-90 hover:opacity-100'
-                }`;
-
-                const waveDisplay = canEndless && gameState.isEndlessMode ? '∞無盡' : `${stage.waves.length}波`;
-                const diffBadge = canEndless && gameState.isEndlessMode ? '無盡' : stage.difficulty;
-
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center justify-between gap-1 mb-0.5">
-                            <span class="text-sm font-black text-amber-950">第 ${stage.id} 關</span>
-                            <span class="text-[11px] font-black px-1.5 py-0.5 rounded-md ${stage.badgeClass}">${diffBadge}</span>
-                        </div>
-                        <div class="text-sm font-black text-amber-900 leading-tight mb-0.5">${stage.name}</div>
-                        <div class="text-xs font-bold text-amber-600 tracking-tighter mb-0.5">${stage.stars}</div>
-                        <p class="text-[11px] text-slate-700 leading-snug line-clamp-2">${stage.description}</p>
-                    </div>
-                    <div class="mt-1.5 pt-1 border-t border-amber-900/15 flex items-center justify-between text-[11px] font-extrabold">
-                        <span class="text-emerald-800">🌊 ${waveDisplay} • ☀️${getStageInitialSun(stage)}</span>
-                        ${isCleared ? '<span class="text-amber-600">⭐已通關</span>' : '<span class="text-slate-400">未通關</span>'}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-
-            updateOverlayPrimaryButton();
-        }
-
-        function updateOverlayPrimaryButton() {
-            const stage = getCurrentStageConfig();
-            const startBtn = document.getElementById('overlay-start-btn');
-            const secondaryBtn = document.getElementById('overlay-secondary-btn');
-            const isEndlessEligible = stage.id === 5 && gameState.clearedStages.includes(5);
-
-            if (startBtn) {
-                if (isEndlessEligible && gameState.isEndlessMode) {
-                    startBtn.textContent = `♾️ 開始第 5 關：無盡生存守衛戰（最高紀錄：第 ${gameState.endlessBestWave} 波）`;
-                    startBtn.onclick = () => startGame(5, true);
-                } else {
-                    startBtn.textContent = `🚀 開始第 ${stage.id} 關：${stage.name}（${stage.difficulty}）`;
-                    startBtn.onclick = () => startGame(stage.id, false);
+            if (cleaned === '李承祐是大帥哥') {
+                const bsod = document.getElementById('bsod-crash-screen');
+                if (bsod) {
+                    bsod.classList.add('hidden');
+                    bsod.classList.remove('flex');
                 }
-            }
-            if (secondaryBtn) {
-                secondaryBtn.classList.add('hidden');
-            }
-        }
+                if (unlockInput) unlockInput.value = '';
+                if (unlockHint) unlockHint.textContent = '';
 
-        function selectStage(stageId) {
-            if (stageId === 5 && gameState.clearedStages.includes(5)) {
-                gameState.isEndlessMode = gameState.currentStageId === 5 ? !gameState.isEndlessMode : true;
+                soundEngine.play('goldsun');
+                showBanner('😎 系統已原諒你並解除假當機鎖定！歡迎回到 218 家族戰場！');
+
+                if (wasRunningBeforeBsod && gameState.isRunning) {
+                    gameState.isPaused = false;
+                    gameState.lastFrameTime = 0;
+                    gameState.loopId = requestAnimationFrame(gameLoop);
+                }
             } else {
-                gameState.isEndlessMode = false;
-            }
-            gameState.currentStageId = stageId;
-            renderStageCards();
-        }
-
-        function openStageSelectModal() {
-            gameState.isRunning = false;
-            gameState.isPaused = false;
-            stopAllTimers();
-            const overlay = document.getElementById('game-overlay');
-            const titleEl = document.getElementById('overlay-title');
-            if (titleEl) titleEl.textContent = '🌻 218家族—植物大戰殭屍 🎃';
-            renderStageCards();
-            if (overlay) overlay.classList.remove('hidden');
-        }
-
-        function pauseGameForModal() {
-            if (!gameState.isRunning || gameState.isPaused) return;
-            gameState.isPaused = true;
-            if (gameState.loopId !== null) {
-                cancelAnimationFrame(gameState.loopId);
-                gameState.loopId = null;
-            }
-            showBanner('⏸️ 遊戲已暫停（正在查看視窗，關閉後自動繼續戰鬥）');
-        }
-
-        function resumeGameFromModal() {
-            if (!gameState.isRunning || !gameState.isPaused) return;
-            const almanacOpen = !document.getElementById('almanac-modal')?.classList.contains('hidden');
-            const imageOpen = !document.getElementById('image-modal')?.classList.contains('hidden');
-            const redeemOpen = !document.getElementById('redeem-modal')?.classList.contains('hidden');
-            const creditsOpen = !document.getElementById('credits-modal')?.classList.contains('hidden');
-            if (almanacOpen || imageOpen || redeemOpen || creditsOpen) return;
-
-            gameState.isPaused = false;
-            gameState.lastFrameTime = 0;
-            showBanner('▶️ 戰鬥已恢復進行！');
-            gameState.loopId = requestAnimationFrame(gameLoop);
-        }
-
-        /**
-         * 218家族全體演員製作名單與通關慶祝特效
-         */
-        const CAST_CREDITS_LIST = [
-            { roleKey: 'sunflower', roleName: '向日葵', actor: '羅子芸', camp: '植物陣營' },
-            { roleKey: 'peashooter', roleName: '奶油射手', actor: '張芷瑜', camp: '植物陣營' },
-            { roleKey: 'firepea', roleName: '燃燒射手', actor: '林婕妤', camp: '植物陣營' },
-            { roleKey: 'wallnut', roleName: '堅果', actor: '許宇希', camp: '植物陣營' },
-            { roleKey: 'chomper', roleName: '食人花', actor: '馮秉凡', camp: '植物陣營' },
-            { roleKey: 'squash', roleName: '倭瓜', actor: '吳穎洲', camp: '植物陣營' },
-            { roleKey: 'cherry', roleName: '櫻桃炸彈', actor: '鄭羽真', camp: '植物陣營' },
-            { roleKey: 'mushroom', roleName: '香菇炸彈', actor: '李承祐', camp: '殭屍精英' },
-            { roleKey: 'normal', roleName: '小胖殭屍', actor: '陳子寧', camp: '殭屍陣營' },
-            { roleKey: 'polevault', roleName: '撐竿跳殭屍', actor: '蔡沛潔', camp: '殭屍陣營' },
-            { roleKey: 'wizard', roleName: '法師殭屍', actor: '徐坪御', camp: '殭屍陣營' },
-            { roleKey: 'wheelchair', roleName: '輪椅殭屍', actor: '鐘家怡', camp: '殭屍坦克' }
-        ];
-
-        function renderCreditsCastGrid() {
-            const grid = document.getElementById('credits-cast-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            CAST_CREDITS_LIST.forEach((item) => {
-                const cfg = CHARACTER_CONFIG[item.roleKey] || CHARACTER_CONFIG.normal;
-                const isPlant = item.camp === '植物陣營';
-                const card = document.createElement('div');
-                card.className = `flex items-center gap-2.5 p-2 rounded-xl border ${
-                    isPlant
-                        ? 'bg-emerald-950/65 border-emerald-500/50'
-                        : 'bg-purple-950/65 border-fuchsia-500/50'
-                }`;
-                card.innerHTML = `
-                    <img src="${cfg.activeUrl}" alt="${item.roleName}" onerror="handleImgFallback(this, '${item.roleKey}')" class="w-11 h-11 rounded-lg bg-white object-contain p-0.5 shadow shrink-0">
-                    <div class="min-w-0 flex-1">
-                        <div class="text-[11px] font-bold ${isPlant ? 'text-emerald-300' : 'text-fuchsia-300'} leading-tight">${item.roleName}</div>
-                        <div class="text-base font-black text-white truncate mt-0.5">${item.actor}</div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function launchVictoryConfetti() {
-            const stage = document.getElementById('game-stage');
-            if (!stage) return;
-
-            const icons = ['🎉', '🎊', '✨', '🌻', '🏆', '⭐', '🔥', '🧈'];
-            for (let i = 0; i < 42; i++) {
-                setTimeout(() => {
-                    if (!stage) return;
-                    const piece = document.createElement('div');
-                    piece.className = 'celebration-confetti text-2xl select-none';
-                    piece.textContent = icons[i % icons.length];
-                    piece.style.left = `${4 + Math.random() * 92}%`;
-                    piece.style.animationDuration = `${2.2 + Math.random() * 1.8}s`;
-                    stage.appendChild(piece);
-                    setTimeout(() => {
-                        if (piece.parentNode) piece.remove();
-                    }, 4200);
-                }, i * 55);
-            }
-        }
-
-        function openCreditsModal(isFinalVictory = false, finalScore = 0) {
-            renderCreditsCastGrid();
-            const modal = document.getElementById('credits-modal');
-            const victoryBanner = document.getElementById('credits-victory-banner');
-            const victoryScore = document.getElementById('credits-victory-score');
-            const endlessBtn = document.getElementById('credits-endless-btn');
-
-            if (victoryBanner) {
-                victoryBanner.classList.toggle('hidden', !isFinalVictory);
-            }
-            if (victoryScore && isFinalVictory) {
-                const modeLabel = gameState.gameMode === 'fusion' ? '🃏 撲克融合變異模式' : '🌱 經典原版模式';
-                victoryScore.textContent = `${modeLabel} • 最終榮耀積分：${finalScore} 分`;
-            }
-            if (endlessBtn) {
-                endlessBtn.classList.toggle('hidden', !isFinalVictory);
-            }
-
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            }
-            if (isFinalVictory) {
-                soundEngine.play('fanfare');
-                launchVictoryConfetti();
-            }
-            pauseGameForModal();
-        }
-
-        function closeCreditsModal() {
-            const modal = document.getElementById('credits-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-            resumeGameFromModal();
-        }
-
-        function resetAllCustomImages() {
-            window.safeStorage.remove(STORAGE_KEY_CUSTOM_IMAGES);
-            ALL_CHAR_KEYS.forEach((roleKey) => {
-                const cfg = CHARACTER_CONFIG[roleKey];
-                if (!cfg) return;
-                cfg.activeUrl = cfg.directUrl;
-                applyCharacterImage(roleKey, cfg.activeUrl);
-                const urlInput = document.getElementById(`url-input-${roleKey}`);
-                if (urlInput) urlInput.value = cfg.directUrl;
-                const statusEl = document.getElementById(`status-${roleKey}`);
-                if (statusEl) {
-                    statusEl.textContent = '⏳ 正在高速預載 Postimages 直鏈...';
-                    statusEl.className = 'text-[10px] text-amber-300 truncate';
-                }
-                preloadSingleCharacter(roleKey);
-            });
-        }
-
-        function applyCustomUrlInput(roleKey) {
-            const input = document.getElementById(`url-input-${roleKey}`);
-            const url = (input ? input.value : '').trim();
-            if (!url || !CHARACTER_CONFIG[roleKey]) return;
-
-            CHARACTER_CONFIG[roleKey].activeUrl = url;
-            applyCharacterImage(roleKey, url);
-            saveCustomImageToStorage(roleKey, url);
-
-            const statusEl = document.getElementById(`status-${roleKey}`);
-            if (statusEl) {
-                statusEl.textContent = '🔵 已套用自訂網址';
-                statusEl.className = 'text-[10px] text-emerald-400 truncate';
-            }
-        }
-
-        function renderImageConfigList() {
-            const grid = document.getElementById('image-config-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            ALL_CHAR_KEYS.forEach((roleKey) => {
-                const cfg = CHARACTER_CONFIG[roleKey];
-                const isHighlight = roleKey === 'firepea' || roleKey === 'wizard' || roleKey === 'mushroom';
-                const card = document.createElement('div');
-                card.className = `flex flex-col gap-1.5 bg-slate-800 p-2.5 rounded-xl border ${
-                    isHighlight ? 'border-emerald-500/60' : 'border-slate-700'
-                }`;
-                card.innerHTML = `
-                    <div class="flex items-center gap-2.5">
-                        <img id="cfg-img-${roleKey}" src="${cfg.activeUrl}" fetchpriority="high" decoding="async" onload="markImgLoaded(this)" onerror="handleImgFallback(this, '${roleKey}')" class="char-img-smooth w-12 h-12 rounded-xl bg-white object-contain p-1 shadow shrink-0" alt="${cfg.name}">
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center justify-between gap-1">
-                                <span class="text-sm font-black text-white truncate">${cfg.name}</span>
-                                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-700 text-amber-300 shrink-0">${cfg.roleLabel}</span>
-                            </div>
-                            <div id="status-${roleKey}" class="text-[11px] text-emerald-400 truncate mt-0.5">⚡ 已套用角色圖片</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1.5 mt-1">
-                        <input id="url-input-${roleKey}" type="text" value="${cfg.activeUrl.startsWith('data:') ? '(本機照片)' : cfg.activeUrl}"
-                               onchange="applyCustomUrlInput('${roleKey}')"
-                               placeholder="貼上圖片直鏈 URL"
-                               class="flex-1 min-w-0 bg-slate-900 border border-slate-600 focus:border-emerald-400 focus:outline-none rounded-lg px-2 py-1 text-xs text-slate-200">
-                        <label class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black px-2.5 py-1 rounded-lg cursor-pointer shrink-0">
-                            📁 上傳
-                            <input type="file" accept="image/*" onchange="handleLocalUpload(event, '${roleKey}')" class="hidden">
-                        </label>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function renderAlmanacList() {
-            const isFusion = gameState.gameMode === 'fusion';
-            if (isFusion) {
-                renderPlantGenotypeMatrix();
-                renderZombieGenotypeMatrix();
-            }
-
-            const classicOverrides = {
-                sunflower: {
-                    roleLabel: '植物 • 基礎陽光經濟生產',
-                    statsText: '消耗 50 陽光 • 冷卻 5.5 秒 • HP 150',
-                    detailDesc: '經典經濟核心植物！每 8 秒穩定產出 1 顆 +25 陽光，建議優先種植在最左側安全排位建立經濟來源。'
-                },
-                peashooter: {
-                    roleLabel: '植物 • 基礎遠程減速射手',
-                    statsText: '消耗 100 陽光 • 冷卻 5 秒 • HP 100 • 22傷+減速',
-                    detailDesc: '每 1.55 秒發射一枚奶油子彈（22 點傷害並附帶 45% 減速控制），有效延緩殭屍推進節奏。'
-                },
-                firepea: {
-                    roleLabel: '植物 • 專打輪椅坦克破甲',
-                    statsText: '消耗 175 陽光 • 冷卻 7.5 秒 • HP 120 • 基礎30傷（對輪椅69暴擊）',
-                    detailDesc: '重裝反坦克火力核心！每 1.55 秒發射一枚烈焰火球，命中一般殭屍造成 30 傷害與 3 秒灼燒；命中輪椅坦克觸發 2.3 倍熔甲暴擊！'
-                },
-                wallnut: {
-                    roleLabel: '植物 • 650血高防前排肉盾',
-                    statsText: '消耗 50 陽光 • 冷卻 12 秒 • HP 650',
-                    detailDesc: '擁有 650 點超高生命值的前排堡壘，具備三階段破損外觀，穩固阻擋敵軍推進。'
-                },
-                chomper: {
-                    roleLabel: '植物 • 唯一克制香菇吞噬',
-                    statsText: '消耗 150 陽光 • 冷卻 10 秒 • 消化 12 秒 • HP 140',
-                    detailDesc: '一口吞噬前方 1.35 格內地面殭屍，是全場唯一能安全消除香菇炸彈而不觸發扇形爆炸與三路分裂的植物；對輪椅坦克造成 220 重咬傷害。'
-                },
-                squash: {
-                    roleLabel: '植物 • 單體飛躍重壓',
-                    statsText: '消耗 100 陽光 • 冷卻 18 秒 • 單體 200 傷害',
-                    detailDesc: '精準單點急救專家！鎖定同列接近的單一地面目標並高躍重壓 200 傷害（起跳期間免疫地面啃食；若壓死香菇炸彈仍會觸發其三路分裂）。'
-                }
-            };
-
-            const grid = document.getElementById('almanac-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            ALL_CHAR_KEYS.forEach((roleKey) => {
-                const cfg = CHARACTER_CONFIG[roleKey];
-                const classicCherryOverride = roleKey === 'cherry' ? {
-                    roleLabel: '植物 • 感應式3×3範圍群體清場',
-                    statsText: '消耗 150 陽光 • 冷卻 15 秒 • 敵人靠近引爆 3×3 群傷 260',
-                    detailDesc: '感應式王牌群體清場核彈！部署後在草皮待機，當周圍 3×3 範圍有殭屍靠近時自動點燃引線，0.45 秒後引爆九宮格全體敵人，造成高達 260 點範圍毀滅傷害。'
-                } : null;
-                const override = !isFusion ? (classicOverrides[roleKey] || classicCherryOverride) : null;
-                const roleLabel = override ? override.roleLabel : cfg.roleLabel;
-                const statsText = override ? override.statsText : cfg.statsText;
-                const detailDesc = override ? override.detailDesc : cfg.detailDesc;
-
-                const isPlant = PLANT_ORDER.includes(roleKey);
-                const card = document.createElement('div');
-                card.className = `flex items-start gap-2.5 p-2.5 rounded-2xl border-2 ${
-                    roleKey === 'firepea'
-                        ? 'bg-gradient-to-br from-orange-50 to-red-100 border-orange-600'
-                        : (isPlant ? 'bg-white/85 border-emerald-600/40' : 'bg-slate-900/10 border-rose-700/40')
-                }`;
-                card.innerHTML = `
-                    <img id="alm-img-${roleKey}" src="${cfg.activeUrl}" fetchpriority="high" decoding="async" onload="markImgLoaded(this)" onerror="handleImgFallback(this, '${roleKey}')" class="char-img-smooth w-14 h-14 rounded-xl bg-white object-contain p-1 shadow shrink-0" alt="${cfg.name}">
-                    <div class="min-w-0 flex-1">
-                        <div class="flex items-center justify-between gap-1">
-                            <span class="text-sm font-black text-amber-950">${cfg.name}</span>
-                            <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full ${
-                                roleKey === 'firepea'
-                                    ? 'bg-orange-600 text-white'
-                                    : (isPlant ? 'bg-emerald-700 text-white' : 'bg-rose-700 text-white')
-                            }">${roleLabel}</span>
-                        </div>
-                        <div class="text-xs font-black text-amber-800 mt-0.5">${statsText}</div>
-                        <p class="text-xs text-slate-700 leading-snug mt-0.5">${detailDesc}</p>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        /**
-         * 渲染植物陣營 7×7 顯隱性基因型交叉表
-         */
-        function renderPlantGenotypeMatrix() {
-            const container = document.getElementById('plant-genotype-matrix');
-            if (!container) return;
-
-            const geneSymbols = {
-                sunflower: 'S',
-                peashooter: 'B',
-                firepea: 'F',
-                wallnut: 'W',
-                chomper: 'C',
-                squash: 'Q',
-                cherry: 'M'
-            };
-
-            let html = `<table class="w-full border-collapse text-center table-fixed min-w-[820px]">
-                <thead>
-                    <tr>
-                        <th class="w-28 p-1.5 bg-emerald-900 text-amber-200 border border-emerald-700 rounded-tl-xl text-xs font-black">
-                            配子 ♂＼♀
-                        </th>`;
-
-            PLANT_ORDER.forEach((colKey) => {
-                const cfg = CHARACTER_CONFIG[colKey];
-                html += `
-                    <th class="p-1.5 bg-emerald-800 text-white border border-emerald-700">
-                        <div class="flex flex-col items-center">
-                            <img src="${cfg.activeUrl}" alt="${cfg.name}" class="w-8 h-8 object-contain bg-white rounded-md p-0.5">
-                            <span class="text-xs font-black mt-0.5 leading-tight">${cfg.name}</span>
-                            <span class="text-[11px] text-yellow-300 font-extrabold">基因 (${geneSymbols[colKey]})</span>
-                        </div>
-                    </th>`;
-            });
-            html += `</tr></thead><tbody>`;
-
-            PLANT_ORDER.forEach((rowKey) => {
-                const rowCfg = CHARACTER_CONFIG[rowKey];
-                html += `<tr>
-                    <th class="p-1.5 bg-emerald-800 text-white border border-emerald-700">
-                        <div class="flex items-center gap-1.5 justify-center">
-                            <img src="${rowCfg.activeUrl}" alt="${rowCfg.name}" class="w-8 h-8 object-contain bg-white rounded-md p-0.5 shrink-0">
-                            <div class="text-left">
-                                <div class="text-xs font-black leading-tight">${rowCfg.name}</div>
-                                <div class="text-[11px] text-yellow-300 font-extrabold">(${geneSymbols[rowKey]})</div>
-                            </div>
-                        </div>
-                    </th>`;
-
-                PLANT_ORDER.forEach((colKey) => {
-                    if (rowKey === colKey) {
-                        if (rowKey === 'sunflower') {
-                            html += `
-                                <td class="p-1.5 bg-amber-200/95 border border-amber-600 align-top">
-                                    <div class="text-[11px] font-black text-amber-950 bg-yellow-300/90 rounded px-1 inline-block mb-0.5">AA 純合顯性</div>
-                                    <div class="text-xs font-black text-amber-900">🌻 疊加向日葵×2</div>
-                                    <div class="text-[11px] text-amber-800 font-bold leading-tight mt-0.5">HP 300 • 每輪同時產+50☀️</div>
-                                </td>`;
-                        } else if (rowKey === 'peashooter') {
-                            html += `
-                                <td class="p-1.5 bg-yellow-200/95 border border-amber-700 align-top">
-                                    <div class="text-[11px] font-black text-amber-950 bg-amber-300/90 rounded px-1 inline-block mb-0.5">BB 純合顯性</div>
-                                    <div class="text-xs font-black text-amber-900">🧈 疊加奶油射手×2</div>
-                                    <div class="text-[11px] text-amber-800 font-bold leading-tight mt-0.5">HP 200 • 雙管連發奶油彈</div>
-                                </td>`;
-                        } else if (rowKey === 'firepea') {
-                            html += `
-                                <td class="p-1.5 bg-orange-200/95 border border-red-700 align-top">
-                                    <div class="text-[11px] font-black text-red-950 bg-orange-300/90 rounded px-1 inline-block mb-0.5">FF 純合顯性</div>
-                                    <div class="text-xs font-black text-red-900">🔥 疊加燃燒豌豆×2</div>
-                                    <div class="text-[11px] text-red-800 font-bold leading-tight mt-0.5">HP 240 • 雙管連發烈焰火球</div>
-                                </td>`;
-                        } else if (rowKey === 'wallnut') {
-                            html += `
-                                <td class="p-1.5 bg-amber-300/95 border border-amber-800 align-top">
-                                    <div class="text-[11px] font-black text-amber-950 bg-yellow-300/90 rounded px-1 inline-block mb-0.5">WW 純合顯性</div>
-                                    <div class="text-xs font-black text-amber-950">🛡️ 疊加堅果×2</div>
-                                    <div class="text-[11px] text-amber-900 font-bold leading-tight mt-0.5">HP 1300 • 雙層鋼鐵重盾</div>
-                                </td>`;
-                        } else if (rowKey === 'chomper') {
-                            html += `
-                                <td class="p-1.5 bg-fuchsia-200/95 border border-purple-800 align-top">
-                                    <div class="text-[11px] font-black text-purple-950 bg-fuchsia-300/90 rounded px-1 inline-block mb-0.5">CC 純合顯性</div>
-                                    <div class="text-xs font-black text-purple-950">🪻 疊加食人花×2</div>
-                                    <div class="text-[11px] text-purple-900 font-bold leading-tight mt-0.5">HP 280 • 雙頭連吞 2 隻</div>
-                                </td>`;
-                        } else if (rowKey === 'squash') {
-                            html += `
-                                <td class="p-1.5 bg-emerald-200/95 border border-emerald-800 align-top">
-                                    <div class="text-[11px] font-black text-emerald-950 bg-emerald-300/90 rounded px-1 inline-block mb-0.5">QQ 純合顯性</div>
-                                    <div class="text-xs font-black text-emerald-950">🎃 疊加倭瓜×2</div>
-                                    <div class="text-[11px] text-emerald-900 font-bold leading-tight mt-0.5">首壓 220 回彈 • 二壓 260</div>
-                                </td>`;
-                        } else if (rowKey === 'cherry') {
-                            html += `
-                                <td class="p-1.5 bg-rose-200/95 border border-rose-800 align-top">
-                                    <div class="text-[11px] font-black text-rose-950 bg-rose-300/90 rounded px-1 inline-block mb-0.5">MM 純合顯性</div>
-                                    <div class="text-xs font-black text-rose-950">🍒 疊加櫻桃炸彈×2</div>
-                                    <div class="text-[11px] text-rose-900 font-bold leading-tight mt-0.5">感應靠近 • 440 雙重核爆</div>
-                                </td>`;
-                        } else {
-                            html += `
-                                <td class="p-1.5 bg-slate-200/70 border border-slate-400/70 align-middle">
-                                    <div class="text-[11px] font-bold text-slate-600">${geneSymbols[rowKey].toLowerCase()}${geneSymbols[colKey].toLowerCase()} 同源隱性</div>
-                                    <div class="text-[11px] text-slate-600 mt-0.5">無法同格疊加</div>
-                                </td>`;
-                        }
-                        return;
-                    }
-
-                    const recipe = findPlantFusionRecipe(rowKey, colKey);
-                    if (recipe) {
-                        const isSunFusion = rowKey === 'sunflower' || colKey === 'sunflower';
-                        const isButterFusion = !isSunFusion && (rowKey === 'peashooter' || colKey === 'peashooter');
-                        const cardBg = isSunFusion
-                            ? 'bg-gradient-to-br from-yellow-100 via-amber-100 to-emerald-100 border-amber-600'
-                            : (isButterFusion
-                                ? 'bg-gradient-to-br from-amber-100 via-yellow-100 to-sky-100 border-amber-700'
-                                : 'bg-gradient-to-br from-orange-100 via-rose-100 to-amber-100 border-rose-600');
-                        const badgeColor = isSunFusion
-                            ? 'bg-emerald-700 text-yellow-200'
-                            : (isButterFusion ? 'bg-amber-800 text-yellow-200' : 'bg-rose-700 text-yellow-200');
-                        const genoCode = `${geneSymbols[rowKey]}${geneSymbols[colKey]}`;
-
-                        html += `
-                            <td class="p-1.5 ${cardBg} border align-top">
-                                <div class="text-[11px] font-black ${badgeColor} rounded px-1 inline-block mb-0.5">${genoCode} 顯性融合</div>
-                                <div class="text-xs font-black text-amber-950 leading-tight">${recipe.name}</div>
-                                <div class="text-[11px] text-slate-800 font-bold leading-tight mt-0.5">${recipe.badge}</div>
-                            </td>`;
-                    } else {
-                        html += `
-                            <td class="p-1.5 bg-slate-100/65 border border-slate-300 align-middle">
-                                <div class="text-[11px] font-bold text-slate-500">${geneSymbols[rowKey].toLowerCase()}${geneSymbols[colKey].toLowerCase()} 隱性排斥</div>
-                                <div class="text-[11px] text-slate-500 mt-0.5">— 不可融合 —</div>
-                            </td>`;
-                    }
-                });
-
-                html += `</tr>`;
-            });
-
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-        }
-
-        /**
-         * 渲染殭屍陣營 5×5 雙雄合體基因型交叉表（15 種創意變異體）
-         */
-        function renderZombieGenotypeMatrix() {
-            const container = document.getElementById('zombie-genotype-matrix');
-            if (!container) return;
-
-            const zombieOrder = ['normal', 'polevault', 'wizard', 'mushroom', 'wheelchair'];
-            const zGeneSymbols = {
-                normal: 'N',
-                polevault: 'P',
-                wizard: 'W',
-                mushroom: 'M',
-                wheelchair: 'T'
-            };
-
-            let html = `<table class="w-full border-collapse text-center table-fixed min-w-[780px]">
-                <thead>
-                    <tr>
-                        <th class="w-32 p-1.5 bg-purple-950 text-fuchsia-200 border border-purple-800 rounded-tl-xl text-xs font-black">
-                            殭屍配子 1＼2
-                        </th>`;
-
-            zombieOrder.forEach((colKey) => {
-                const cfg = CHARACTER_CONFIG[colKey];
-                html += `
-                    <th class="p-1.5 bg-purple-900 text-white border border-purple-800">
-                        <div class="flex flex-col items-center">
-                            <img src="${cfg.activeUrl}" alt="${cfg.name}" class="w-8 h-8 object-contain bg-white rounded-md p-0.5">
-                            <span class="text-xs font-black mt-0.5 leading-tight">${cfg.name}</span>
-                            <span class="text-[11px] text-fuchsia-300 font-extrabold">基因 (${zGeneSymbols[colKey]})</span>
-                        </div>
-                    </th>`;
-            });
-            html += `</tr></thead><tbody>`;
-
-            zombieOrder.forEach((rowKey) => {
-                const rowCfg = CHARACTER_CONFIG[rowKey];
-                const rowHp = ZOMBIE_STATS[rowKey].hp;
-                html += `<tr>
-                    <th class="p-1.5 bg-purple-900 text-white border border-purple-800">
-                        <div class="flex items-center gap-1.5 justify-center">
-                            <img src="${rowCfg.activeUrl}" alt="${rowCfg.name}" class="w-8 h-8 object-contain bg-white rounded-md p-0.5 shrink-0">
-                            <div class="text-left">
-                                <div class="text-xs font-black leading-tight">${rowCfg.name}</div>
-                                <div class="text-[11px] text-fuchsia-300 font-extrabold">(${zGeneSymbols[rowKey]}) HP:${rowHp}</div>
-                            </div>
-                        </div>
-                    </th>`;
-
-                zombieOrder.forEach((colKey) => {
-                    const colHp = ZOMBIE_STATS[colKey].hp;
-                    const recipe = findZombieFusionRecipe(rowKey, colKey);
-                    const mergedBaseHp = Math.round((rowHp + colHp) * (recipe ? recipe.hpMult : 1.3));
-                    const isPure = rowKey === colKey;
-                    const genoCode = `${zGeneSymbols[rowKey]}${zGeneSymbols[colKey]}`;
-                    const cellStyle = isPure
-                        ? 'bg-purple-100/90 border-purple-500'
-                        : 'bg-gradient-to-br from-fuchsia-100 via-purple-100 to-rose-100 border-fuchsia-600';
-
-                    html += `
-                        <td class="p-1.5 ${cellStyle} border align-top">
-                            <div class="text-[11px] font-black bg-purple-900 text-fuchsia-200 rounded px-1 inline-block mb-0.5">${genoCode} • ${recipe ? recipe.badge : '雙雄合體'}</div>
-                            <div class="text-xs font-black text-purple-950 leading-tight">${recipe ? recipe.name : '變異雙雄'} <span class="text-[11px] text-purple-700">(HP ${mergedBaseHp})</span></div>
-                            <div class="text-[11px] text-rose-900 font-bold leading-tight mt-0.5">${recipe ? recipe.trait : ''}</div>
-                        </td>`;
-                });
-
-                html += `</tr>`;
-            });
-
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-        }
-
-        function preloadSingleCharacter(roleKey) {
-            return new Promise((resolve) => {
-                const cfg = CHARACTER_CONFIG[roleKey];
-                const savedMap = loadSavedCustomImages();
-                const targetUrl = savedMap[roleKey] || cfg.directUrl;
-                const isCustomLocal = Boolean(savedMap[roleKey]);
-
-                cfg.activeUrl = targetUrl;
-                applyCharacterImage(roleKey, targetUrl);
-
-                const statusEl = document.getElementById(`status-${roleKey}`);
-                if (statusEl) {
-                    statusEl.textContent = isCustomLocal ? '⏳ 載入自訂照片中...' : '⏳ 正在高速下載 Postimages 直鏈...';
-                    statusEl.className = 'text-[10px] text-amber-300 truncate';
-                }
-
-                const cachedImg = PRELOADED_IMAGE_CACHE[roleKey];
-                if (cachedImg && cachedImg.src === targetUrl && cachedImg.complete && cachedImg.naturalWidth > 0) {
-                    if (statusEl) {
-                        statusEl.textContent = isCustomLocal ? '🔵 已載入自訂照片' : '⚡ 已極速預載 Postimages 直鏈';
-                        statusEl.className = 'text-[10px] text-emerald-400 truncate';
-                    }
-                    resolve(true);
-                    return;
-                }
-
-                const img = new Image();
-                img.decoding = 'async';
-                try {
-                    img.fetchPriority = 'high';
-                } catch (e) {
-                    // 忽略不支援屬性
-                }
-                img.onload = () => {
-                    PRELOADED_IMAGE_CACHE[roleKey] = img;
-                    if (statusEl) {
-                        statusEl.textContent = isCustomLocal ? '🔵 已載入自訂照片' : '⚡ 已極速預載 Postimages 直鏈';
-                        statusEl.className = 'text-[10px] text-emerald-400 truncate';
-                    }
-                    resolve(true);
-                };
-                img.onerror = () => {
-                    if (statusEl) {
-                        statusEl.textContent = '⚠️ 連線異常，可點右側上傳本機照片';
-                        statusEl.className = 'text-[10px] text-rose-400 truncate';
-                    }
-                    resolve(false);
-                };
-                img.src = targetUrl;
-            });
-        }
-
-        function preloadAllCharacterAssets() {
-            renderImageConfigList();
-            renderAlmanacList();
-
-            const fillEl = document.getElementById('boot-progress-fill');
-            const sunEl = document.getElementById('boot-sun-rider');
-            const pctEl = document.getElementById('boot-percent-text');
-            const statusEl = document.getElementById('boot-status-text');
-            const loaderEl = document.getElementById('boot-loader');
-
-            const totalAssets = ALL_CHAR_KEYS.length;
-            let loadedCount = 0;
-            let displayPct = 0;
-            let isFinished = false;
-            const bootStartTime = performance.now();
-
-            const updateVisualBar = (pct) => {
-                const clamped = Math.max(0, Math.min(100, Math.round(pct)));
-                if (fillEl) fillEl.style.width = `${clamped}%`;
-                if (sunEl) sunEl.style.left = `${clamped}%`;
-                if (pctEl) pctEl.textContent = `${clamped}%`;
-
-                const thresholds = [18, 38, 58, 78, 95];
-                thresholds.forEach((th, idx) => {
-                    const sprout = document.getElementById(`sprout-${idx + 1}`);
-                    if (sprout && clamped >= th) {
-                        sprout.classList.remove('opacity-20', 'scale-50', 'translate-y-2');
-                        sprout.classList.add('opacity-100', 'scale-110', 'translate-y-0');
-                    }
-                });
-            };
-
-            const finishBootLoader = () => {
-                if (isFinished) return;
-                isFinished = true;
-                updateVisualBar(100);
-                if (statusEl) statusEl.textContent = '🌻 218 植物防線準備就緒！';
-                setTimeout(() => {
-                    if (loaderEl) {
-                        loaderEl.classList.add('boot-done');
-                        setTimeout(() => {
-                            if (loaderEl.parentNode) loaderEl.remove();
-                        }, 650);
-                    }
-                }, 180);
-            };
-
-            ALL_CHAR_KEYS.forEach((roleKey) => {
-                preloadSingleCharacter(roleKey).finally(() => {
-                    loadedCount++;
-                    if (statusEl && loadedCount < totalAssets) {
-                        statusEl.textContent = `🌱 正在喚醒 ${CHARACTER_CONFIG[roleKey].name}（${loadedCount}/${totalAssets}）...`;
-                    }
-                });
-            });
-
-            const progressTicker = setInterval(() => {
-                const elapsed = performance.now() - bootStartTime;
-                const realRatio = (loadedCount / totalAssets) * 100;
-                const timeFloor = Math.min(95, (elapsed / 950) * 95);
-                const targetPct = loadedCount >= totalAssets
-                    ? Math.min(100, (elapsed / 950) * 100)
-                    : Math.min(realRatio, timeFloor);
-
-                displayPct += (targetPct - displayPct) * 0.35;
-                if (targetPct - displayPct < 0.8) displayPct = targetPct;
-                updateVisualBar(displayPct);
-
-                if ((loadedCount >= totalAssets && elapsed >= 950) || elapsed >= 1800) {
-                    clearInterval(progressTicker);
-                    finishBootLoader();
-                }
-            }, 30);
-        }
-
-        function applyCharacterImage(roleKey, url) {
-            const previewMap = {
-                sunflower: ['preview-sunflower', 'modal-img-sunflower', 'cfg-img-sunflower', 'alm-img-sunflower'],
-                peashooter: ['preview-peashooter', 'modal-img-peashooter', 'cfg-img-peashooter', 'alm-img-peashooter'],
-                firepea: ['preview-firepea', 'modal-img-firepea', 'cfg-img-firepea', 'alm-img-firepea'],
-                wallnut: ['preview-wallnut', 'modal-img-wallnut', 'cfg-img-wallnut', 'alm-img-wallnut'],
-                chomper: ['preview-chomper', 'modal-img-chomper', 'cfg-img-chomper', 'alm-img-chomper'],
-                squash: ['preview-squash', 'modal-img-squash', 'cfg-img-squash', 'alm-img-squash'],
-                cherry: ['preview-cherry', 'modal-img-cherry', 'cfg-img-cherry', 'alm-img-cherry'],
-                normal: ['modal-img-normal', 'cfg-img-normal', 'alm-img-normal'],
-                polevault: ['modal-img-polevault', 'cfg-img-polevault', 'alm-img-polevault'],
-                wizard: ['modal-img-wizard', 'cfg-img-wizard', 'alm-img-wizard'],
-                mushroom: ['modal-img-mushroom', 'cfg-img-mushroom', 'alm-img-mushroom'],
-                wheelchair: ['modal-img-wheelchair', 'cfg-img-wheelchair', 'alm-img-wheelchair']
-            };
-
-            const targetIds = previewMap[roleKey] || [];
-            targetIds.forEach((id) => {
-                const el = document.getElementById(id);
-                if (el) el.src = url;
-            });
-
-            document.querySelectorAll(`img[data-role="${roleKey}"]`).forEach((img) => {
-                img.src = url;
-            });
-            if (roleKey === 'mushroom') {
-                document.querySelectorAll('img[data-role="mini_mushroom"]').forEach((img) => {
-                    img.src = url;
-                });
-            }
-        }
-
-        /**
-         * 壓縮本機上傳照片至 256x256 並永久記憶至 localStorage
-         */
-        function handleLocalUpload(event, roleKey) {
-            const file = event.target?.files?.[0];
-            if (!file) return;
-            try {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const rawDataUrl = e.target?.result;
-                    if (!rawDataUrl || !CHARACTER_CONFIG[roleKey]) return;
-
-                    const tempImg = new Image();
-                    tempImg.onload = () => {
-                        try {
-                            const maxDim = 256;
-                            let w = tempImg.width;
-                            let h = tempImg.height;
-                            if (w > maxDim || h > maxDim) {
-                                if (w > h) {
-                                    h = Math.round((h * maxDim) / w);
-                                    w = maxDim;
-                                } else {
-                                    w = Math.round((w * maxDim) / h);
-                                    h = maxDim;
-                                }
-                            }
-                            const canvas = document.createElement('canvas');
-                            canvas.width = w;
-                            canvas.height = h;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(tempImg, 0, 0, w, h);
-                            const compressedUrl = canvas.toDataURL('image/png');
-
-                            CHARACTER_CONFIG[roleKey].activeUrl = compressedUrl;
-                            applyCharacterImage(roleKey, compressedUrl);
-                            saveCustomImageToStorage(roleKey, compressedUrl);
-                            const urlInput = document.getElementById(`url-input-${roleKey}`);
-                            if (urlInput) urlInput.value = '(本機壓縮照片已記憶)';
-                            const statusEl = document.getElementById(`status-${roleKey}`);
-                            if (statusEl) {
-                                statusEl.textContent = '🔵 已壓縮並記憶本機照片';
-                                statusEl.className = 'text-[10px] text-emerald-400 truncate';
-                            }
-                        } catch (canvasErr) {
-                            CHARACTER_CONFIG[roleKey].activeUrl = rawDataUrl;
-                            applyCharacterImage(roleKey, rawDataUrl);
-                            saveCustomImageToStorage(roleKey, rawDataUrl);
-                        }
-                    };
-                    tempImg.src = rawDataUrl;
-                };
-                reader.readAsDataURL(file);
-            } catch (err) {
-                // 忽略檔案讀取失敗
-            }
-        }
-
-        /**
-         * ==========================================
-         * 5. 5×9 草皮網格與「最後防線割草機」單例初始化
-         * ==========================================
-         */
-        function initGridUI() {
-            const gridLayer = document.getElementById('grid-layer');
-            if (!gridLayer) return;
-            gridLayer.innerHTML = '';
-
-            gameState.grid = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
-
-            for (let r = 0; r < ROWS; r++) {
-                for (let c = 0; c < COLS; c++) {
-                    const cell = document.createElement('div');
-                    const isEven = (r + c) % 2 === 0;
-                    cell.className = `lawn-cell border border-emerald-950/20 cursor-pointer transition-colors ${
-                        isEven ? 'lawn-cell-even' : 'lawn-cell-odd'
-                    }`;
-                    cell.dataset.row = r;
-                    cell.dataset.col = c;
-                    let lastTouchTime = 0;
-                    cell.addEventListener('touchend', (e) => {
-                        if (e.cancelable) e.preventDefault();
-                        lastTouchTime = performance.now();
-                        handleCellClick(r, c);
-                    }, { passive: false });
-                    cell.addEventListener('click', () => {
-                        if (performance.now() - lastTouchTime < 350) return;
-                        handleCellClick(r, c);
-                    });
-                    gridLayer.appendChild(cell);
+                soundEngine.play('boom');
+                if (unlockHint) {
+                    unlockHint.textContent = '❌ 密語錯誤！必須一字不差輸入「李承祐是大帥哥」才能解鎖喔！';
                 }
             }
         }
