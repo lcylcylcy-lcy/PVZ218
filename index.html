@@ -732,7 +732,8 @@
                     </div>
                     <p class="text-xs text-slate-300 mb-3">輸入官方活動序號可解鎖隱藏福利權限：</p>
                     <p id="redeem-status-desc" class="hidden text-xs text-amber-300 bg-amber-950/70 border border-amber-500/40 rounded-xl p-2 mb-3"></p>
-                    <input id="redeem-input" type="text" placeholder="請在此輸入兌換碼..." onkeydown="if(event.key==='Enter') submitRedeemCode()" class="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-400 focus:outline-none rounded-xl px-3.5 py-2 text-sm text-white mb-4">
+                    <input id="redeem-input" type="text" autocomplete="off" spellcheck="false" placeholder="請在此輸入兌換碼..." onkeydown="if(event.key==='Enter' && !event.isComposing) submitRedeemCode()" class="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-400 focus:outline-none rounded-xl px-3.5 py-2 text-sm text-white mb-2">
+                    <p id="redeem-inline-feedback" class="text-xs font-black text-rose-400 min-h-[18px] mb-2"></p>
                     <div class="flex items-center justify-between gap-2">
                         <button type="button" id="redeem-rollback-btn" onclick="rollbackCheatMode()" class="hidden px-3 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-white text-xs font-black cursor-pointer">
                             🔄 回溯恢復正常模式
@@ -750,23 +751,22 @@
             </div>
 
             <!-- 彩蛋致命錯誤當機遮罩（輸入「李承祐好醜」觸發假當機，輸入「李承祐是大帥哥」即可原地解除） -->
-            <div id="bsod-crash-screen" class="absolute inset-0 bg-[#0037da] z-[999] hidden flex-col justify-center p-8 sm:p-12 text-white font-mono select-none">
+            <div id="bsod-crash-screen" class="absolute inset-0 bg-gradient-to-br from-[#06288a] via-[#0037da] to-[#02195e] z-[9999] hidden flex-col justify-center p-8 sm:p-12 text-white font-sans select-none">
                 <div class="max-w-3xl mx-auto w-full">
                     <div class="text-7xl sm:text-8xl font-black mb-4">:(</div>
                     <h2 class="text-2xl sm:text-3xl font-black mb-3 leading-snug">
-                        偵測到嚴重違規言論：系統核心已假裝崩潰並鎖定！
+                        偵測到嚴重違規言論：218 家族系統已假裝當機並鎖定！
                     </h2>
                     <p class="text-base sm:text-lg text-blue-100 mb-5 leading-relaxed">
-                        錯誤代碼：<span class="bg-white text-[#0037da] font-black px-2 py-0.5 rounded">ERR_CREATOR_SLANDER_LOCK (0x00000218)</span><br>
+                        違規代碼：<span class="bg-white text-[#0037da] font-black px-2 py-0.5 rounded">218_CREATOR_PROTECTION_LOCK</span><br>
                         原因分析：在製作人「李承祐」親手打造的 218 家族世界裡，竟然敢輸入「李承祐好醜」，系統已啟動趣味假當機防護。
                     </p>
                     <div class="bg-blue-950/75 border-2 border-blue-300/60 rounded-2xl p-4 text-xs sm:text-sm text-blue-200 space-y-1 mb-5">
-                        <div>*** STOP: 0x218_LEE_CHENG_YU_IS_HANDSOME (0xFFFFF800, 0x00000000)</div>
-                        <div>*** 狀態說明：網頁並未真正壞掉，戰局進度已完整凍結保存中。</div>
-                        <div>*** 解除方案：請在下方輸入通關密語「<span class="text-yellow-300 font-black">李承祐是大帥哥</span>」即可立即解除並回到遊戲！</div>
+                        <div>• 狀態說明：網頁並未真正壞掉，戰局進度與所有植物已完整凍結保存中。</div>
+                        <div>• 解除方案：請在下方輸入通關密語「<span class="text-yellow-300 font-black">李承祐是大帥哥</span>」即可立即解除並回到遊戲！</div>
                     </div>
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-xl">
-                        <input id="bsod-unlock-input" type="text" placeholder="請輸入：李承祐是大帥哥" onkeydown="if(event.key==='Enter') unlockCreatorCrashEasterEgg()" class="flex-1 bg-blue-950/90 border-2 border-blue-200 focus:border-yellow-300 focus:outline-none rounded-xl px-4 py-3 text-base font-sans text-white placeholder-blue-300/70">
+                        <input id="bsod-unlock-input" type="text" autocomplete="off" spellcheck="false" placeholder="請輸入：李承祐是大帥哥" onkeydown="if(event.key==='Enter' && !event.isComposing) unlockCreatorCrashEasterEgg()" class="flex-1 bg-blue-950/90 border-2 border-blue-200 focus:border-yellow-300 focus:outline-none rounded-xl px-4 py-3 text-base font-sans text-white placeholder-blue-300/70">
                         <button type="button" onclick="unlockCreatorCrashEasterEgg()" class="bg-yellow-300 hover:bg-yellow-200 text-[#0037da] font-sans font-black px-6 py-3 rounded-xl text-base shadow-xl cursor-pointer transition shrink-0">
                             🔓 確認解鎖並返回遊戲
                         </button>
@@ -2928,7 +2928,9 @@
         function openRedeemModal() {
             const modal = document.getElementById('redeem-modal');
             const input = document.getElementById('redeem-input');
+            const feedback = document.getElementById('redeem-inline-feedback');
             if (input) input.value = '';
+            if (feedback) feedback.textContent = '';
             updateRedeemModalUI();
             if (modal) {
                 modal.classList.remove('hidden');
@@ -2943,7 +2945,9 @@
         function closeRedeemModal() {
             const modal = document.getElementById('redeem-modal');
             const input = document.getElementById('redeem-input');
+            const feedback = document.getElementById('redeem-inline-feedback');
             if (input) input.value = '';
+            if (feedback) feedback.textContent = '';
             if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
@@ -2951,14 +2955,26 @@
             resumeGameFromModal();
         }
 
+        function normalizeEasterEggText(str) {
+            return String(str || '')
+                .replace(/[\s\u3000\u200B-\u200D\uFEFF，。！？!?,."']/g, '');
+        }
+
         function submitRedeemCode() {
             const input = document.getElementById('redeem-input');
-            const raw = (input ? input.value : '').replace(/[\s\u3000\u200B-\u200D\uFEFF]/g, '');
+            const feedback = document.getElementById('redeem-inline-feedback');
+            const raw = normalizeEasterEggText(input ? input.value : '');
             const lower = raw.toLowerCase();
 
-            // 彩蛋懲罰：輸入「李承祐好醜」觸發全畫面趣味藍屏假當機（輸入「李承祐是大帥哥」可原地解除）
-            if (raw === '李承祐好醜') {
+            if (!raw) {
+                if (feedback) feedback.textContent = '⚠️ 請先輸入兌換序號再按確認！';
+                return;
+            }
+
+            // 彩蛋懲罰：嚴格限定輸入「李承祐好醜」觸發全畫面趣味藍屏假當機
+            if (raw === '李承祐好醜' || raw.includes('李承祐好醜')) {
                 if (input) input.value = '';
+                if (feedback) feedback.textContent = '';
                 const redeemModal = document.getElementById('redeem-modal');
                 if (redeemModal) {
                     redeemModal.classList.add('hidden');
@@ -2969,7 +2985,7 @@
             }
 
             // 讚美彩蛋：一般狀態輸入「李承祐是大帥哥」可獲得誠實讚美 +500 陽光
-            if (raw === '李承祐是大帥哥') {
+            if (raw === '李承祐是大帥哥' || raw.includes('李承祐是大帥哥')) {
                 if (!gameState.infiniteSun) {
                     gameState.sun += 500;
                 }
@@ -2995,10 +3011,13 @@
                 updateHUD();
                 updateSeedCardsUI();
                 showBanner('✨ VIP 權限已啟動：無限陽光能量（∞）與全植物零冷卻！（可隨時於兌換視窗一鍵回溯）');
+                closeRedeemModal();
             } else {
+                if (feedback) {
+                    feedback.textContent = `❌ 無效序號「${raw}」（請檢查是否有打錯字喔！）`;
+                }
                 showBanner('❌ 無效的兌換序號！');
             }
-            closeRedeemModal();
         }
 
         let wasRunningBeforeBsod = false;
@@ -3022,6 +3041,7 @@
             if (bsod) {
                 bsod.classList.remove('hidden');
                 bsod.classList.add('flex');
+                bsod.style.display = 'flex';
                 setTimeout(() => {
                     if (unlockInput) unlockInput.focus();
                 }, 40);
@@ -3031,13 +3051,14 @@
         function unlockCreatorCrashEasterEgg() {
             const unlockInput = document.getElementById('bsod-unlock-input');
             const unlockHint = document.getElementById('bsod-unlock-hint');
-            const cleaned = (unlockInput ? unlockInput.value : '').replace(/[\s\u3000\u200B-\u200D\uFEFF]/g, '');
+            const cleaned = normalizeEasterEggText(unlockInput ? unlockInput.value : '');
 
-            if (cleaned === '李承祐是大帥哥') {
+            if (cleaned === '李承祐是大帥哥' || cleaned.includes('李承祐是大帥哥')) {
                 const bsod = document.getElementById('bsod-crash-screen');
                 if (bsod) {
                     bsod.classList.add('hidden');
                     bsod.classList.remove('flex');
+                    bsod.style.display = '';
                 }
                 if (unlockInput) unlockInput.value = '';
                 if (unlockHint) unlockHint.textContent = '';
@@ -3053,7 +3074,7 @@
             } else {
                 soundEngine.play('boom');
                 if (unlockHint) {
-                    unlockHint.textContent = '❌ 密語錯誤！必須一字不差輸入「李承祐是大帥哥」才能解鎖喔！';
+                    unlockHint.textContent = `❌ 目前輸入為「${cleaned || '空白'}」，必須輸入「李承祐是大帥哥」才能解鎖喔！`;
                 }
             }
         }
