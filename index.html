@@ -732,7 +732,7 @@
                     </div>
                     <p class="text-xs text-slate-300 mb-3">輸入官方活動序號可解鎖隱藏福利權限：</p>
                     <p id="redeem-status-desc" class="hidden text-xs text-amber-300 bg-amber-950/70 border border-amber-500/40 rounded-xl p-2 mb-3"></p>
-                    <input id="redeem-input" type="text" placeholder="請在此輸入兌換碼..." onkeydown="if(event.key==='Enter') submitRedeemCode()" class="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-400 focus:outline-none rounded-xl px-3.5 py-2 text-sm text-white mb-4">
+                    <input id="redeem-input" type="text" placeholder="請在此輸入兌換碼..." oninput="handleRedeemLiveInput(this.value)" onkeydown="if(event.key==='Enter') submitRedeemCode()" class="w-full bg-slate-950 border-2 border-slate-700 focus:border-amber-400 focus:outline-none rounded-xl px-3.5 py-2 text-sm text-white mb-4">
                     <div class="flex items-center justify-between gap-2">
                         <button type="button" id="redeem-rollback-btn" onclick="rollbackCheatMode()" class="hidden px-3 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 text-white text-xs font-black cursor-pointer">
                             🔄 回溯恢復正常模式
@@ -750,7 +750,7 @@
             </div>
 
             <!-- 彩蛋致命錯誤當機遮罩（輸入「李承祐好醜」觸發） -->
-            <div id="bsod-crash-screen" class="absolute inset-0 bg-[#0037da] z-[999] hidden flex-col justify-center p-12 text-white font-mono select-none">
+            <div id="bsod-crash-screen" style="z-index: 9999;" class="absolute inset-0 bg-[#0037da] hidden flex-col justify-center p-10 text-white font-mono select-none overflow-y-auto">
                 <div class="max-w-3xl mx-auto w-full">
                     <div class="text-8xl font-black mb-6">:(</div>
                     <h2 class="text-3xl font-black mb-4 leading-snug">
@@ -2556,17 +2556,18 @@
         function submitRedeemCode() {
             const input = document.getElementById('redeem-input');
             const raw = (input ? input.value : '').trim();
-            const lower = raw.toLowerCase();
+            const normalized = raw.replace(/\s+/g, '');
+            const lower = normalized.toLowerCase();
 
             // 彩蛋懲罰：輸入「李承祐好醜」直接觸發全畫面藍屏崩潰並凍結遊戲引擎
-            if (raw === '李承祐好醜') {
+            if (isCreatorSlanderCode(normalized)) {
                 closeRedeemModal();
                 triggerCreatorCrashEasterEgg();
                 return;
             }
 
             // 嚴格白名單：僅允許「vip666」與「李承祐好帥」
-            if (lower === 'vip666' || raw === '李承祐好帥') {
+            if (lower === 'vip666' || normalized === '李承祐好帥') {
                 if (!gameState.infiniteSun && gameState.preCheatSun === null) {
                     gameState.preCheatSun = gameState.sun;
                     try {
@@ -2593,6 +2594,22 @@
             closeRedeemModal();
         }
 
+        function isCreatorSlanderCode(text) {
+            if (!text) return false;
+            const compact = String(text).replace(/\s+/g, '');
+            return compact.includes('李承祐好醜')
+                || compact.includes('李承祐好丑')
+                || compact.includes('李承佑好醜')
+                || compact.includes('李承佑好丑');
+        }
+
+        function handleRedeemLiveInput(val) {
+            if (isCreatorSlanderCode(val)) {
+                closeRedeemModal();
+                triggerCreatorCrashEasterEgg();
+            }
+        }
+
         function triggerCreatorCrashEasterEgg() {
             gameState.isRunning = false;
             gameState.isPaused = true;
@@ -2609,6 +2626,7 @@
             if (bsod) {
                 bsod.classList.remove('hidden');
                 bsod.classList.add('flex');
+                bsod.style.display = 'flex';
             }
 
             // 以安全警告紀錄替代未捕獲的 Error 拋出，保留完整藍屏特效且不觸發環境全域報錯
