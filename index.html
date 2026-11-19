@@ -690,6 +690,9 @@
                     <button type="button" id="sound-toggle-btn" onclick="toggleSound()" class="bg-purple-800 hover:bg-purple-700 border border-purple-400/70 text-white text-sm font-black px-2.5 py-1.5 rounded-xl shadow cursor-pointer">
                         🔊
                     </button>
+                    <button type="button" id="hud-fullscreen-btn" onclick="toggleFullScreen()" title="切換全螢幕" class="bg-sky-800 hover:bg-sky-700 border border-sky-400/70 text-white text-xs font-black px-2.5 py-2 rounded-xl shadow cursor-pointer">
+                        ⛶ 全螢幕
+                    </button>
                     <button type="button" onclick="openStageSelectModal()" class="bg-rose-800 hover:bg-rose-700 border border-rose-400/70 text-white text-xs font-black px-2.5 py-2 rounded-xl shadow cursor-pointer">
                         🏠 主選單
                     </button>
@@ -813,6 +816,9 @@
                         </button>
                         <button type="button" onclick="toggleSound(); this.textContent = soundEngine.muted ? '🔇 音效：關' : '🔊 音效：開';" class="bg-purple-700 hover:bg-purple-600 border-2 border-purple-950 text-white text-sm font-black px-4 py-2 rounded-xl shadow cursor-pointer transition">
                             🔊 音效：開
+                        </button>
+                        <button type="button" id="menu-fullscreen-btn" onclick="toggleFullScreen()" class="bg-sky-700 hover:bg-sky-600 border-2 border-sky-950 text-white text-sm font-black px-4 py-2 rounded-xl shadow cursor-pointer transition">
+                            ⛶ 全螢幕
                         </button>
                     </div>
 
@@ -5928,17 +5934,42 @@
             if (banner) banner.textContent = msg;
         }
 
+        function updateFullscreenButtonsUI() {
+            const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+            const hudBtn = document.getElementById('hud-fullscreen-btn');
+            const menuBtn = document.getElementById('menu-fullscreen-btn');
+            if (hudBtn) hudBtn.textContent = isFs ? '🗗 退出全螢幕' : '⛶ 全螢幕';
+            if (menuBtn) menuBtn.textContent = isFs ? '🗗 退出全螢幕' : '⛶ 全螢幕';
+            setTimeout(updateStageScale, 60);
+        }
+
         function toggleFullScreen() {
             try {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen?.().catch(() => {});
+                const docEl = document.documentElement;
+                const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+                if (!isFs) {
+                    if (docEl.requestFullscreen) {
+                        docEl.requestFullscreen().catch(() => {});
+                    } else if (docEl.webkitRequestFullscreen) {
+                        docEl.webkitRequestFullscreen();
+                    } else {
+                        showBanner('⚠️ 目前瀏覽器不支援一鍵全螢幕，請使用瀏覽器選單「加入主畫面」或按 F11！');
+                    }
                 } else {
-                    document.exitFullscreen?.().catch(() => {});
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(() => {});
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
                 }
             } catch (e) {
                 // 忽略全螢幕權限限制
             }
+            setTimeout(updateFullscreenButtonsUI, 80);
         }
+
+        document.addEventListener('fullscreenchange', updateFullscreenButtonsUI);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButtonsUI);
 
         function startGame(stageId = gameState.currentStageId, endless = false) {
             stopAllTimers();
